@@ -152,6 +152,31 @@ class PushTxRestApi {
       if (!validator.isHexadecimal(query.tx))
         return this._traceError(res, errors.body.INVDATA)
 
+      if (query.strict_mode_vouts) {
+        const outs = query.strict_mode_vouts.split('|')
+        if (outs.length > 0) {
+          let faults
+          for (let item of outs) {
+            if (!validator.isInt(item))
+              return this._traceError(res, errors.body.INVDATA)
+          }
+          try {
+            const indices = outs.map(v => parseInt(v, 10))
+            faults = await pushTxProcessor.enforceStrictModeVouts(query.tx, indices)
+          } catch(e) {
+            this._traceError(res, e)
+          }
+          if (faults.length > 0) {
+            return this._traceError(res, {
+              'message': JSON.stringify({
+                'message': faults,
+                'code': errors.pushtx.VIOLATION_STRICT_MODE_VOUTS
+              })
+            })
+          }
+        }
+      }
+
       try {
         const txid = await pushTxProcessor.pushTx(query.tx)
         HttpServer.sendOkData(res, txid)
@@ -198,10 +223,7 @@ class PushTxRestApi {
 
         if (msg.code && msg.message) {
           Logger.error(null, 'PushTx : Error ' + msg.code + ': ' + msg.message)
-          ret = {
-            message: msg.message,
-            code: msg.code
-          }
+          ret = msg
         } else {
           Logger.error(err.message, 'PushTx : ')
           ret = err.message
