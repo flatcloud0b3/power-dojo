@@ -21,7 +21,7 @@ A word of caution, though, the default values of these options try to maximize y
 
 ## Local indexer of Bitcoin addresses ##
 
-By default, Dojo uses the local full node as its data source for imports and rescans of HD accounts and addresses. While private, this default option has many limitations. MyDojo allows to install a local indexer ([addrindexrs](https://github.com/Samourai-Wallet/addrindexrs)) providing the best of both worlds (no request sent to a third party, fast and real time rescans, complete transactional history is retrieved).
+By default, Dojo uses the local full node as its data source for imports and rescans of HD accounts and addresses. While private, this default option has many limitations. MyDojo allows to install a local indexer ([addrindexrs](https://code.samourai.io/dojo/addrindexrs)) providing the best of both worlds (no request sent to a third party, fast and real time rescans, complete transactional history is retrieved).
 
 
 ### Requirements ###
@@ -122,7 +122,7 @@ nano ./conf/docker-node.conf
 
 ## Local Whirlpool client ##
 
-This setup allows to install and run a [Whirlpool client](https://github.com/Samourai-Wallet/whirlpool-client-cli) inside MyDojo.
+This setup allows to install and run a [Whirlpool client](https://code.samourai.io/whirlpool/whirlpool-client-cli) inside MyDojo.
 
 The client can be configured and controlled through a REST API exposed as a Tor hidden service.
 
@@ -144,7 +144,7 @@ nano ./conf/docker-whirlpool.conf
 
 ### Installation of Whirlpool GUI ###
 
-The [Whirlpool GUI application]((https://github.com/Samourai-Wallet/whirlpool-gui)) provides a graphical interface for your Whirlpool client.  
+The [Whirlpool GUI application]((https://code.samourai.io/whirlpool/whirlpool-gui)) provides a graphical interface for your Whirlpool client.  
 
 These steps describe how to install the Whirlpool GUI application how a computer and how to connect it to your Whirlpool client.
 

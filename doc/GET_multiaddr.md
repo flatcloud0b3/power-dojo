@@ -135,4 +135,4 @@ Status code 400 with JSON response:
 ```
 
 ## Notes
-Multiaddr response is consumed by the wallet in the [APIFactory](https://github.com/Samourai-Wallet/samourai-wallet-android/blob/master/app/src/main/java/com/samourai/wallet/api/APIFactory.java)
+Multiaddr response is consumed by the wallet in the [APIFactory](https://code.samourai.io/wallet/samourai-wallet-android/-/blob/master/app/src/main/java/com/samourai/wallet/api/APIFactory.java)

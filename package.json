@@ -8,11 +8,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com:Samourai-Wallet/samourai-dojo.git"
+    "url": "git+ssh://git@code.samourai.io:dojo/samourai-dojo.git"
   },
   "author": "Katana Cryptographic Ltd.",
   "license": "AGPL-3.0-only",
-  "homepage": "https://github.com/Samourai-Wallet/samourai-dojo",
+  "homepage": "https://code.samourai.io/dojo/samourai-dojo",
   "dependencies": {
     "async-sema": "2.1.2",
     "bip39": "2.4.0",
