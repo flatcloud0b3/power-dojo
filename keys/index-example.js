@@ -175,6 +175,18 @@ module.exports = {
       oxt: 'https://api.oxt.me'
     },
     /*
+     * Explorer recommended by this Dojo
+     */
+    explorer: {
+      // Active explorer
+      // Values: oxt | btc_rpc_explorer
+      active: 'oxt',
+      // URI of the explorer
+      uri: 'https://oxt.me',
+      // Password (value required for btc_rpc_explorer)
+      password: '<password>'
+    },
+    /*
      * Max number of transactions per address
      * accepted during fast scan
      */
@@ -294,6 +306,11 @@ module.exports = {
       },
       socks5Proxy: null,
       esplora: 'https://blockstream.info/testnet'
+    },
+    explorer: {
+      active: 'none',
+      uri: '',
+      password: '<password>'
     },
     addrFilterThreshold: 1000,
     addrDerivationPool: {
