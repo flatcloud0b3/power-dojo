@@ -76,11 +76,13 @@ class PushTxProcessor {
         addrMap[address] = vout
     }
     // Checks with indexer if addresses are known and have been used
-    if (keys.indexer.active != 'local_bitcoind') {
-      const results = await this.sources.getAddresses(Object.keys(addrMap))
-      for (let r of results)
-        if (r.ntx > 0)
-          faultyOutputs.push(addrMap[r.address])
+    if (Object.keys(addrMap).length > 0) {
+      if (keys.indexer.active != 'local_bitcoind') {
+        const results = await this.sources.getAddresses(Object.keys(addrMap))
+        for (let r of results)
+          if (r.ntx > 0)
+            faultyOutputs.push(addrMap[r.address])
+      }
     }
     return faultyOutputs
   }

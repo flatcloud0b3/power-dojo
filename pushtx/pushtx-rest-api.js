@@ -153,27 +153,23 @@ class PushTxRestApi {
         return this._traceError(res, errors.body.INVDATA)
 
       if (query.strict_mode_vouts) {
-        const outs = query.strict_mode_vouts.split('|')
-        if (outs.length > 0) {
-          let faults
-          for (let item of outs) {
-            if (!validator.isInt(item))
-              return this._traceError(res, errors.body.INVDATA)
-          }
-          try {
-            const indices = outs.map(v => parseInt(v, 10))
-            faults = await pushTxProcessor.enforceStrictModeVouts(query.tx, indices)
-          } catch(e) {
-            this._traceError(res, e)
-          }
-          if (faults.length > 0) {
-            return this._traceError(res, {
-              'message': JSON.stringify({
-                'message': faults,
-                'code': errors.pushtx.VIOLATION_STRICT_MODE_VOUTS
+        try {
+          const vouts = query.strict_mode_vouts.split('|').map(v => parseInt(v, 10))
+          if (vouts.some(isNaN))
+            throw errors.txout.VOUT
+          if (vouts.length > 0) {
+            let faults = await pushTxProcessor.enforceStrictModeVouts(query.tx, vouts)
+            if (faults.length > 0) {
+              return this._traceError(res, {
+                'message': JSON.stringify({
+                  'message': faults,
+                  'code': errors.pushtx.VIOLATION_STRICT_MODE_VOUTS
+                })
               })
-            })
+            }
           }
+        } catch(e) {
+          return this._traceError(res, e)
         }
       }
 
