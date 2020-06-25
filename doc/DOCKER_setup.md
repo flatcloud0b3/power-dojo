@@ -113,7 +113,7 @@ For MacOS, see this detailed [installation guide](./DOCKER_mac_setup.MD).
 
 For Synology, see this detailed [installation guide](./DOCKER_synology_setup.md).
 
-For Raspberry Pi4 and Odroid N2, see the [Ronin Dojo Project](https://github.com/RoninDojo/RoninDojo)
+For Raspberry Pi4 and Odroid N2, see the [Ronin Dojo Project](https://code.samourai.io/ronindojo/RoninDojo)
 
 
 This procedure allows to install a new Dojo from scratch.
