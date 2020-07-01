@@ -2,10 +2,26 @@
  * keys/index-example.js
  * Copyright (c) 2016-2018, Samourai Wallet (CC BY-NC-ND 4.0 License).
  */
+const fs = require('fs')
 
+
+// Retrieve active bitcoin network from conf files
 const bitcoinNetwork = (process.env.COMMON_BTC_NETWORK == 'testnet')
   ? 'testnet'
   : 'bitcoin'
+
+// Retrieve explorer config from conf files
+let explorerActive = 'oxt'
+let explorerUrl = 'https://oxt.me'
+let explorerPassword = ''
+if (process.env.EXPLORER_INSTALL == 'on') {
+  try {
+    explorerUrl = fs.readFileSync('/var/lib/tor/hsv3explorer/hostname', 'utf8').replace('\n', '')
+    explorerPassword = process.env.EXPLORER_KEY
+    explorerActive = 'btc_rpc_explorer'
+  } catch(e) {}
+}
+
 
 /**
  * Desired structure of /keys/index.js, which is ignored in the repository.
@@ -179,6 +195,18 @@ module.exports = {
       oxt: process.env.NODE_URL_OXT_API,
       // Esplora (testnet)
       esplora: process.env.NODE_URL_ESPLORA_API,
+    },
+    /*
+     * Explorer recommended by this Dojo
+     */
+    explorer: {
+      // Active explorer
+      // Values: oxt | btc_rpc_explorer
+      active: explorerActive,
+      // URI of the explorer
+      uri: explorerUrl,
+      // Password (value required for btc_rpc_explorer)
+      password: explorerPassword
     },
     /*
      * Max number of transactions per address

@@ -312,20 +312,11 @@ class SupportRestApi {
    */
   async getPairingExplorer(req, res) {
     try {
-      let url = ''
-      if (process.env.EXPLORER_INSTALL == 'on') {
-        try {
-          url = fs.readFileSync('/var/lib/tor/hsv3explorer/hostname', 'utf8')
-          url = url.replace('\n', '')
-        } catch(e) {
-          Logger.error(e, 'API : SupportRestApi.getPairing() : Cannot read explorer onion address')
-        }
-      }
       const ret = {
         'pairing': {
-          'type': 'explorer.btcRpcExplorer',
-          'url': url,
-          'key': process.env.EXPLORER_KEY
+          'type': `explorer.${keys.explorer.active}`,
+          'url': keys.explorer.uri,
+          'key': keys.explorer.password
         }
       }
       HttpServer.sendRawData(res, JSON.stringify(ret, null, 2))
