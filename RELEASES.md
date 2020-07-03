@@ -18,11 +18,15 @@
 ## Samourai Dojo v1.7.0 ##
 
 
-### Change log ###
-
-
 ### Notable changes ###
 
+
+#### Upgrade of whirlpool to v0.10.7 ####
+
+Upgrade to [whirlpool-cli](https://code.samourai.io/whirlpool/whirlpool-client-cli) v0.10.7
+
+
+### Change log ###
 
 
 #### MyDojo ####
@@ -30,7 +34,8 @@
 - [#mr142](https://code.samourai.io/dojo/samourai-dojo/-/merge_requests/142) add setup of explorer in keys.index.js 
 - [#mr143](https://code.samourai.io/dojo/samourai-dojo/-/merge_requests/143) update doc and package.json with url of new repository 
 - [#mr144](https://code.samourai.io/dojo/samourai-dojo/-/merge_requests/144) switch addrindexrs repo to gitlab 
-- [#mr145](https://code.samourai.io/dojo/samourai-dojo/-/merge_requests/145) explicitely set algo used for jwt signatures 
+- [#mr145](https://code.samourai.io/dojo/samourai-dojo/-/merge_requests/145) explicitely set algo used for jwt signatures
+- [#mr146](https://code.samourai.io/dojo/samourai-dojo/-/merge_requests/146) upgrade whirlpool to whirlpool-cli 0.10.7
 
 
 #### Credits ###
