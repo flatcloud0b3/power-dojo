@@ -21,6 +21,15 @@
 ### Notable changes ###
 
 
+#### New optional strict_mode_vouts added to PushTx endpoints ####
+
+A new optional "strict mode" is added to the /pushtx and /pushtx/schedule endpoints of the API.
+
+This strict mode enforces a few additional checks on a selected subset of the outputs of a transaction before it's pushed on the P2P network or before it's scheduled for a delayed push. 
+
+See this [doc](https://code.samourai.io/dojo/samourai-dojo/-/blob/develop/doc/POST_pushtx.md) for detailed information.
+
+
 #### Upgrade of whirlpool to v0.10.7 ####
 
 Upgrade to [whirlpool-cli](https://code.samourai.io/whirlpool/whirlpool-client-cli) v0.10.7
@@ -36,6 +45,7 @@ Upgrade to [whirlpool-cli](https://code.samourai.io/whirlpool/whirlpool-client-c
 - [#mr144](https://code.samourai.io/dojo/samourai-dojo/-/merge_requests/144) switch addrindexrs repo to gitlab 
 - [#mr145](https://code.samourai.io/dojo/samourai-dojo/-/merge_requests/145) explicitely set algo used for jwt signatures
 - [#mr146](https://code.samourai.io/dojo/samourai-dojo/-/merge_requests/146) upgrade whirlpool to whirlpool-cli 0.10.7
+- [#mr147](https://code.samourai.io/dojo/samourai-dojo/-/merge_requests/147) add new optional strict_mode_vouts to pushtx endpoints
 
 
 #### Credits ###
