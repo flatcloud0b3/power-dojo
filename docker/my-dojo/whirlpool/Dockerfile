@@ -51,10 +51,10 @@ RUN     set -ex && \
 
 # Install whirlpool-cli
 ENV     WHIRLPOOL_URL                 https://code.samourai.io/whirlpool/whirlpool-client-cli/uploads
-ENV     WHIRLPOOL_VERSION             0.10.6
-ENV     WHIRLPOOL_VERSION_HASH        a05b443bf9d266702327c99fd8bad5da
+ENV     WHIRLPOOL_VERSION             0.10.7
+ENV     WHIRLPOOL_VERSION_HASH        8487fff43052fd9ad1ecd8b6856d9de9
 ENV     WHIRLPOOL_JAR                 "whirlpool-client-cli-$WHIRLPOOL_VERSION-run.jar"
-ENV     WHIRLPOOL_SHA256              eb07ef5637c2bb52b1be57b62941120a689b0c02600c38dbda3b8dd701d03cc8
+ENV     WHIRLPOOL_SHA256              5636a7a5c578b54cfe0c19d187e91255d7473fdedd881d2a90e6a5dcad32dc25
 
 RUN     set -ex && \
         cd "$WHIRLPOOL_DIR" && \
