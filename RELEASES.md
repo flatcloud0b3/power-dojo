@@ -3,6 +3,7 @@
 
 ## Releases ##
 
+- [v1.7.0](#1_7_0)
 - [v1.6.0](#1_6_0)
 - [v1.5.0](#1_5_0)
 - [v1.4.1](#1_4_1)
@@ -10,6 +11,31 @@
 - [v1.3.0](#1_3_0)
 - [v1.2.0](#1_2_0)
 - [v1.1.0](#1_1_0)
+
+
+<a name="1_7_0"/>
+
+## Samourai Dojo v1.7.0 ##
+
+
+### Change log ###
+
+
+### Notable changes ###
+
+
+
+#### MyDojo ####
+
+- [#mr142](https://code.samourai.io/dojo/samourai-dojo/-/merge_requests/142) add setup of explorer in keys.index.js 
+- [#mr143](https://code.samourai.io/dojo/samourai-dojo/-/merge_requests/143) update doc and package.json with url of new repository 
+- [#mr144](https://code.samourai.io/dojo/samourai-dojo/-/merge_requests/144) switch addrindexrs repo to gitlab 
+- [#mr145](https://code.samourai.io/dojo/samourai-dojo/-/merge_requests/145) explicitely set algo used for jwt signatures 
+
+
+#### Credits ###
+
+- kenshin-samourai
 
 
 <a name="1_6_0"/>
