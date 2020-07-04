@@ -39,12 +39,13 @@ Status code 400 with JSON response:
   "error": "<error message>"
 }
 ```
-or
+
+or status code 200 with JSON response:
 ```json
 {
   "status": "error",
   "error": {
-    "message": [vouts],
+    "message": [<vout>],
     "code": "VIOLATION_STRICT_MODE_VOUTS"
   }
 }
