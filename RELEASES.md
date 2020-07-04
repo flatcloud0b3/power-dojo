@@ -46,6 +46,7 @@ Upgrade to [whirlpool-cli](https://code.samourai.io/whirlpool/whirlpool-client-c
 - [#mr145](https://code.samourai.io/dojo/samourai-dojo/-/merge_requests/145) explicitely set algo used for jwt signatures
 - [#mr146](https://code.samourai.io/dojo/samourai-dojo/-/merge_requests/146) upgrade whirlpool to whirlpool-cli 0.10.7
 - [#mr147](https://code.samourai.io/dojo/samourai-dojo/-/merge_requests/147) add new optional strict_mode_vouts to pushtx endpoints
+- [#mr148](https://code.samourai.io/dojo/samourai-dojo/-/merge_requests/148) status code pushtx endpoints
 
 
 #### Credits ###
