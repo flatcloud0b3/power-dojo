@@ -165,7 +165,7 @@ class PushTxRestApi {
                   'message': faults,
                   'code': errors.pushtx.VIOLATION_STRICT_MODE_VOUTS
                 })
-              })
+              }, 200)
             }
           }
         } catch(e) {
@@ -198,7 +198,13 @@ class PushTxRestApi {
       await this.scheduler.schedule(req.body.script)
       HttpServer.sendOk(res)
     } catch(e) {
-      this._traceError(res, e)
+      // Returns code 200 if VIOLATION_STRICT_MODE_VOUTS
+      if (e.message && e.message.code && e.message.code == errors.pushtx.VIOLATION_STRICT_MODE_VOUTS) {
+        e.message = JSON.stringify(e.message)
+        this._traceError(res, e, 200)
+      } else {
+        this._traceError(res, e)
+      }
     }
   }
 
@@ -206,9 +212,12 @@ class PushTxRestApi {
    * Trace an error during push
    * @param {object} res - http response object
    * @param {object} err - error object
+   * @param {int} errorCode - error code (optional)
    */
-  _traceError(res, err) {
+  _traceError(res, err, errorCode) {
     let ret = null
+
+    errorCode = errorCode == null ? 400 : errorCode
 
     try {
       if (err.message) {
@@ -232,7 +241,7 @@ class PushTxRestApi {
       Logger.error(e, 'PushTx : ')
       ret = e
     } finally {
-      HttpServer.sendError(res, ret)
+      HttpServer.sendError(res, ret, errorCode)
     }
   }
 

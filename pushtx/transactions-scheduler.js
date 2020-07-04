@@ -112,10 +112,10 @@ class TransactionsScheduler {
       // Return if strict_mode_vout has detected errors
       if (faults.length > 0) {
         throw {
-          'message': JSON.stringify({
+          'message': {
             'message': faults,
             'code': errors.pushtx.VIOLATION_STRICT_MODE_VOUTS
-          })
+          }
         }
       }
 

@@ -29,6 +29,7 @@ If step A and step B have the same **hop** value, then they MAY HAVE different *
 The transaction MUST HAVE its nLockTime field filled with the height of a block.
 The height of the block MUST BE equal to the value of the **nlocktime** field of the ScriptStep object.
 
+* **strict_mode_vouts** (optional) - `int[]` - An array of outpoints indices. A strict verification is enforced on these outpoints before the transaction is pushed. Strict mode checks that addresses associated to these outputs aren't reused. If verifications fail, the scheduled push is aborted and an error is returned. 
 
 ### Examples
 
@@ -45,7 +46,8 @@ Request Body (JSON-encoded)
   "script": [{
     "hop": 0,
     "nlocktime": 549817,
-    "tx": "<tx0_raw_hex>"
+    "tx": "<tx0_raw_hex>",
+    "strict_mode_vouts": [0,1]
   }, {
     "hop": 1,
     "nlocktime": 549818,
@@ -120,5 +122,20 @@ Status code 400 with JSON response:
 {
   "status": "error",
   "error": "<error message>"
+}
+```
+
+or status code 200 with JSON response:
+```json
+{
+  "status": "error",
+  "error": {
+    "message": [{
+      "txid": "<txid>",
+      "hop": <hop>,
+      "vouts": [<vout>]
+    }, ...],
+    "code": "VIOLATION_STRICT_MODE_VOUTS"
+  }
 }
 ```
