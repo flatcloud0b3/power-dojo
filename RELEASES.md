@@ -30,9 +30,11 @@ This strict mode enforces a few additional checks on a selected subset of the ou
 See this [doc](https://code.samourai.io/dojo/samourai-dojo/-/blob/develop/doc/POST_pushtx.md) for detailed information.
 
 
-#### Upgrade of whirlpool to v0.10.7 ####
+#### Upgrade of whirlpool to v0.10.8 ####
 
-Upgrade to [whirlpool-cli](https://code.samourai.io/whirlpool/whirlpool-client-cli) v0.10.7
+Upgrade to [whirlpool-cli](https://code.samourai.io/whirlpool/whirlpool-client-cli) v0.10.8
+
+A new config parameter `WHIRLPOOL_RESYNC` is added to docker-whirlpool.conf. When set to `on`, mix counters are resynchronized on startup of whirlpool-cli.
 
 
 ### Change log ###
@@ -47,11 +49,13 @@ Upgrade to [whirlpool-cli](https://code.samourai.io/whirlpool/whirlpool-client-c
 - [#mr146](https://code.samourai.io/dojo/samourai-dojo/-/merge_requests/146) upgrade whirlpool to whirlpool-cli 0.10.7
 - [#mr147](https://code.samourai.io/dojo/samourai-dojo/-/merge_requests/147) add new optional strict_mode_vouts to pushtx endpoints
 - [#mr148](https://code.samourai.io/dojo/samourai-dojo/-/merge_requests/148) status code pushtx endpoints
+- [#mr149](https://code.samourai.io/dojo/samourai-dojo/-/merge_requests/149) upgrade whirlpool to whirlpool-cli 0.10.8 
 
 
 #### Credits ###
 
 - kenshin-samourai
+- zeroleak
 
 
 <a name="1_6_0"/>
