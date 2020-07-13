@@ -57,6 +57,7 @@ class TransactionsScheduler {
       // Iterate over the transactions for a few validations
       let lastHopProcessed = -1
       let lastLockTimeProcessed = -1
+      const faults = []
 
       for (let entry of script) {
         // Compute delta height (entry.nlocktime - nltTx0)
@@ -77,11 +78,45 @@ class TransactionsScheduler {
           if (entry.nlocktime < lastLockTimeProcessed)
             throw errors.pushtx.SCHEDULED_BAD_ORDER
         }
+        // Enforce strcit_mode_vouts if required
+        const vouts = entry.strict_mode_vouts
+        if (vouts) {
+          try {
+            if (vouts.some(isNaN))
+              throw errors.txout.VOUT
+            if (vouts.length > 0) {
+              let faultsTx = await pushTxProcessor.enforceStrictModeVouts(entry.tx, vouts)
+              if (faultsTx.length > 0) {
+                const txid = bitcoin.Transaction.fromHex(entry.tx).getId()
+                for (let vout of faultsTx) {
+                  faults.push({
+                    "txid": txid,
+                    "hop": entry.hop,
+                    "vouts": vout
+                  })
+                }
+              }
+            }
+          } catch(e) {
+            throw e
+          }
+        }
+        // Prepare verification of next hop
         lastHopProcessed = entry.hop
         lastLockTimeProcessed = entry.nlocktime
         // Update scheduled height if needed
         if (baseHeight != nltTx0)
           entry.nlocktime = baseHeight + entry.delta
+      }
+
+      // Return if strict_mode_vout has detected errors
+      if (faults.length > 0) {
+        throw {
+          'message': {
+            'message': faults,
+            'code': errors.pushtx.VIOLATION_STRICT_MODE_VOUTS
+          }
+        }
       }
 
       let parentTxid = null

@@ -8,10 +8,19 @@ const bitcoin = require('bitcoinjs-lib')
 const zmq = require('zeromq')
 const Logger = require('../lib/logger')
 const errors = require('../lib/errors')
+const db = require('../lib/db/mysql-db-wrapper')
 const RpcClient = require('../lib/bitcoind-rpc/rpc-client')
 const network = require('../lib/bitcoin/network')
+const activeNet = network.network
 const keys = require('../keys')[network.key]
 const status = require('./status')
+
+let Sources
+if (network.key == 'bitcoin') {
+  Sources = require('../lib/remote-importer/sources-mainnet')
+} else {
+  Sources = require('../lib/remote-importer/sources-testnet')
+}
 
 
 /**
@@ -25,6 +34,7 @@ class PushTxProcessor {
    */
   constructor() {
     this.notifSock = null
+    this.sources = new Sources()
     // Initialize the rpc client
     this.rpcClient = new RpcClient()
   }
@@ -36,6 +46,45 @@ class PushTxProcessor {
     // Notification socket for the tracker
     this.notifSock = zmq.socket('pub')
     this.notifSock.bindSync(config.uriSocket)
+  }
+
+  /**
+   * Enforce a strict verification mode on a list of outputs
+   * @param {string} rawtx - raw bitcoin transaction in hex format
+   * @param {array} vouts - output indices (integer)
+   * @returns {array} returns the indices of the faulty outputs 
+   */
+  async enforceStrictModeVouts(rawtx, vouts) {
+    const faultyOutputs = []
+    const addrMap = {}
+    let tx
+    try {
+      tx = bitcoin.Transaction.fromHex(rawtx)
+    } catch(e) {
+      throw errors.tx.PARSE
+    }
+    // Check in db if addresses are known and have been used 
+    for (let vout of vouts) {
+      if (vout >= tx.outs.length)
+        throw errors.txout.VOUT
+      const output = tx.outs[vout]
+      const address = bitcoin.address.fromOutputScript(output.script, activeNet)
+      const nbTxs = await db.getAddressNbTransactions(address)
+      if (nbTxs == null || nbTxs > 0)
+        faultyOutputs.push(vout)
+      else
+        addrMap[address] = vout
+    }
+    // Checks with indexer if addresses are known and have been used
+    if (Object.keys(addrMap).length > 0) {
+      if (keys.indexer.active != 'local_bitcoind') {
+        const results = await this.sources.getAddresses(Object.keys(addrMap))
+        for (let r of results)
+          if (r.ntx > 0)
+            faultyOutputs.push(addrMap[r.address])
+      }
+    }
+    return faultyOutputs
   }
 
   /**

@@ -22,6 +22,10 @@ else
   whirlpool_options+=(--cli.dojo.url="http://172.30.1.3:80/v2/")
 fi
 
+if [ "$WHIRLPOOL_RESYNC" == "on" ]; then
+  whirlpool_options+=(--resync)
+fi
+
 if [ "$WHIRLPOOL_DEBUG" == "on" ]; then
   whirlpool_options+=(--debug)
 fi

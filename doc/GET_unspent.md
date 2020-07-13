@@ -79,4 +79,4 @@ Status code 400 with JSON response:
 ```
 
 ## Notes
-Unspent response is consumed by the wallet in the [APIFactory](https://github.com/Samourai-Wallet/samourai-wallet-android/blob/master/app/src/main/java/com/samourai/wallet/api/APIFactory.java)
+Unspent response is consumed by the wallet in the [APIFactory](https://code.samourai.io/wallet/samourai-wallet-android/-/blob/master/app/src/main/java/com/samourai/wallet/api/APIFactory.java)

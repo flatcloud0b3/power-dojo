@@ -152,6 +152,27 @@ class PushTxRestApi {
       if (!validator.isHexadecimal(query.tx))
         return this._traceError(res, errors.body.INVDATA)
 
+      if (query.strict_mode_vouts) {
+        try {
+          const vouts = query.strict_mode_vouts.split('|').map(v => parseInt(v, 10))
+          if (vouts.some(isNaN))
+            throw errors.txout.VOUT
+          if (vouts.length > 0) {
+            let faults = await pushTxProcessor.enforceStrictModeVouts(query.tx, vouts)
+            if (faults.length > 0) {
+              return this._traceError(res, {
+                'message': JSON.stringify({
+                  'message': faults,
+                  'code': errors.pushtx.VIOLATION_STRICT_MODE_VOUTS
+                })
+              }, 200)
+            }
+          }
+        } catch(e) {
+          return this._traceError(res, e)
+        }
+      }
+
       try {
         const txid = await pushTxProcessor.pushTx(query.tx)
         HttpServer.sendOkData(res, txid)
@@ -177,7 +198,13 @@ class PushTxRestApi {
       await this.scheduler.schedule(req.body.script)
       HttpServer.sendOk(res)
     } catch(e) {
-      this._traceError(res, e)
+      // Returns code 200 if VIOLATION_STRICT_MODE_VOUTS
+      if (e.message && e.message.code && e.message.code == errors.pushtx.VIOLATION_STRICT_MODE_VOUTS) {
+        e.message = JSON.stringify(e.message)
+        this._traceError(res, e, 200)
+      } else {
+        this._traceError(res, e)
+      }
     }
   }
 
@@ -185,9 +212,12 @@ class PushTxRestApi {
    * Trace an error during push
    * @param {object} res - http response object
    * @param {object} err - error object
+   * @param {int} errorCode - error code (optional)
    */
-  _traceError(res, err) {
+  _traceError(res, err, errorCode) {
     let ret = null
+
+    errorCode = errorCode == null ? 400 : errorCode
 
     try {
       if (err.message) {
@@ -198,10 +228,7 @@ class PushTxRestApi {
 
         if (msg.code && msg.message) {
           Logger.error(null, 'PushTx : Error ' + msg.code + ': ' + msg.message)
-          ret = {
-            message: msg.message,
-            code: msg.code
-          }
+          ret = msg
         } else {
           Logger.error(err.message, 'PushTx : ')
           ret = err.message
@@ -214,7 +241,7 @@ class PushTxRestApi {
       Logger.error(e, 'PushTx : ')
       ret = e
     } finally {
-      HttpServer.sendError(res, ret)
+      HttpServer.sendError(res, ret, errorCode)
     }
   }
 
