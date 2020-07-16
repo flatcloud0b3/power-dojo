@@ -62,8 +62,7 @@ function initTabs() {
     '#link-info-address',
     '#link-rescan-address',
     '#link-rescan-blocks',
-    '#link-multiaddr',
-    '#link-unspent',
+    '#link-wallet',
     '#link-tx'
   ];
 
@@ -142,10 +141,8 @@ function preparePage() {
       $("#cell-args2").show();
       placeholder = 'RESCAN BLOCKS FROM HEIGHT...';
       placeholder2 = '...TO HEIGHT (OPTIONAL)';
-    } else if (activeTab == '#link-multiaddr') {
-      placeholder = 'ENTER /MULTIADDR URL ARGUMENTS (e.g.: active=xpub0123456789&new=address2|address3&pubkey=pubkey4)';
-    } else if (activeTab == '#link-unspent') {
-      placeholder = 'ENTER /UNSPENT URL ARGUMENTS (e.g.: active=xpub0123456789&new=address2|address3&pubkey=pubkey4)';
+    } else if (activeTab == '#link-wallet') {
+      placeholder = 'ENTER /WALLET URL ARGUMENTS (e.g.: active=xpub0123456789&new=address2|address3&pubkey=pubkey4)';
     } else if (activeTab == '#link-tx') {
       placeholder = 'ENTER A TRANSACTION TXID';
     } else if (activeTab == '#link-rescan-xpub') {
@@ -231,10 +228,8 @@ function processAction(activeTab, args, args2, args3) {
     jsonData[aArg[0]] = aArg[1];
   }
 
-  if (activeTab == '#link-multiaddr')
-    return lib_api.getMultiaddr(jsonData);
-  else if (activeTab == '#link-unspent')
-    return lib_api.getUnspent(jsonData);
+  if (activeTab == '#link-wallet')
+    return lib_api.getWallet(jsonData);
   else if (activeTab == '#link-xpub')
     return lib_api.postXpub(jsonData);
 }
