@@ -2,7 +2,7 @@
 
 Request details about a collection of HD accounts and/or loose addresses and/or pubkeys (derived in 3 formats P2PKH, P2WPKH/P2SH, P2WPKH Bech32) including a list of unspent transaction outputs.
 
-This endpoint merges the deprecated /multiaddr and /unspent endpoints
+This endpoint merges the deprecated /multiaddr and /unspent endpoints augmented with feerates info provided by the /fees endpoint.
 
 
 ## Behavior of the active parameter
@@ -64,6 +64,13 @@ Status code 200 with JSON response:
       "height": 100000,
       "hash": "abcdef",
       "time": 1000000000
+    },
+    "fees": {
+      "2": 181,
+      "4": 150,
+      "6": 150,
+      "12": 111,
+      "24": 62
     }
   },
   "addresses": [
