@@ -1,8 +1,8 @@
-# Get Multiaddr
+# Get Wallet
 
-Note: Starting with Dojo 1.8.0, this API endpoint is deprecated. See the new [/wallet endpoint](./GET_wallet.md)
+Request details about a collection of HD accounts and/or loose addresses and/or pubkeys (derived in 3 formats P2PKH, P2WPKH/P2SH, P2WPKH Bech32) including a list of unspent transaction outputs.
 
-Request details about a collection of HD accounts and/or loose addresses and/or pubkeys (derived in 3 formats P2PKH, P2WPKH/P2SH, P2WPKH Bech32).
+This endpoint merges the deprecated /multiaddr and /unspent endpoints augmented with feerates info provided by the /fees endpoint.
 
 
 ## Behavior of the active parameter
@@ -27,11 +27,11 @@ Support of [BIP47](https://github.com/bitcoin/bips/blob/master/bip-0047.mediawik
 
 Note that loose addresses that are also part of one of the HD accounts requested will be ignored. Their balances and transactions are listed as part of the HD account result.
 
-The `POST` version of multiaddr is identical, except the parameters are in the POST body.
+The `POST` version of `/wallet` is identical, except the parameters are in the POST body.
 
 
 ```
-GET /multiaddr?active=...[&new=...][&bip49=...][&bip84=...][&pubkey=...]
+GET /wallet?active=...[&new=...][&bip49=...][&bip84=...][&pubkey=...]
 ```
 
 ## Parameters
@@ -45,11 +45,11 @@ GET /multiaddr?active=...[&new=...][&bip49=...][&bip84=...][&pubkey=...]
 ### Examples
 
 ```
-GET /multiaddr?active=xpub0123456789&new=address2|address3&pubkey=pubkey4
-GET /multiaddr?active=xpub0123456789|address1|address2
-GET /multiaddr?bip49=xpub0123456789
-GET /multiaddr?bip84=xpub0123456789
-GET /multiaddr?pubkey=0312345678901
+GET /wallet?active=xpub0123456789&new=address2|address3&pubkey=pubkey4
+GET /wallet?active=xpub0123456789|address1|address2
+GET /wallet?bip49=xpub0123456789
+GET /wallet?bip84=xpub0123456789
+GET /wallet?pubkey=0312345678901
 ```
 
 #### Success
@@ -64,6 +64,13 @@ Status code 200 with JSON response:
       "height": 100000,
       "hash": "abcdef",
       "time": 1000000000
+    },
+    "fees": {
+      "2": 181,
+      "4": 150,
+      "6": 150,
+      "12": 111,
+      "24": 62
     }
   },
   "addresses": [
@@ -115,6 +122,23 @@ Status code 200 with JSON response:
         }
       ]
     }
+  ],
+  "unspent_outputs": [
+    {
+      "tx_hash": "abcdef",
+      "tx_output_n": 2,
+      "tx_version": 1,
+      "tx_locktime": 0,
+      "value": 10000,
+      "script": "abcdef",
+      "addr": "1xAddress",
+      "pubkey": "03Pubkey -or- inexistant attribute"
+      "confirmations": 10000,
+      "xpub": {
+        "m": "xpubABCDEF",
+        "path": "M/1/5"
+      }
+    }
   ]
 }
 ```
@@ -127,6 +151,7 @@ Status code 200 with JSON response:
 * `result.txs[i].inputs[j].prev_out.addr` should be present for BIP47-related addresses but may be `null` if the previous output address is unknown
 * `result.txs[i].out[j].addr` should be present for BIP47-related addresses
 
+
 #### Failure
 Status code 400 with JSON response:
 ```json
@@ -137,4 +162,4 @@ Status code 400 with JSON response:
 ```
 
 ## Notes
-Multiaddr response is consumed by the wallet in the [APIFactory](https://code.samourai.io/wallet/samourai-wallet-android/-/blob/master/app/src/main/java/com/samourai/wallet/api/APIFactory.java)
+Wallet response is consumed by the wallet in the [APIFactory](https://code.samourai.io/wallet/samourai-wallet-android/-/blob/master/app/src/main/java/com/samourai/wallet/api/APIFactory.java)

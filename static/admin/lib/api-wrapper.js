@@ -119,18 +119,10 @@ var lib_api = {
   },
 
   /**
-   * Multiaddr
+   * Wallet
    */
-  getMultiaddr: function(arguments) {
-    let uri = this.baseUri + '/multiaddr';
-    return this.sendGetUriEncoded(uri, arguments);
-  },
-
-  /**
-   * Unspent
-   */
-  getUnspent: function(arguments) {
-    let uri = this.baseUri + '/unspent';
+  getWallet: function(arguments) {
+    let uri = this.baseUri + '/wallet';
     return this.sendGetUriEncoded(uri, arguments);
   },
 

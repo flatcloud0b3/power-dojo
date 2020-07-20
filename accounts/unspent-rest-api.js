@@ -17,6 +17,7 @@ const debugApi = !!(process.argv.indexOf('api-debug') > -1)
 
 /**
  * Unspent API endpoints
+ * @deprecated
  */
 class UnspentRestApi {
 

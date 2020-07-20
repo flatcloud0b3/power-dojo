@@ -1,5 +1,5 @@
 /*!
- * accounts/multiaddr-rest-api.js
+ * accounts/wallet-rest-api.js
  * Copyright © 2019 – Katana Cryptographic Ltd. All Rights Reserved.
  */
 'use strict'
@@ -16,10 +16,9 @@ const debugApi = !!(process.argv.indexOf('api-debug') > -1)
 
 
 /**
- * Multiaddr API endpoints
- * @deprecated
+ * Wallet API endpoints
  */
-class MultiaddrRestApi {
+class WalletRestApi {
 
   /**
    * Constructor
@@ -32,29 +31,29 @@ class MultiaddrRestApi {
     const urlencodedParser = bodyParser.urlencoded({ extended: true })
 
     this.httpServer.app.get(
-      '/multiaddr',
+      '/wallet',
       authMgr.checkAuthentication.bind(authMgr),
       apiHelper.validateEntitiesParams.bind(apiHelper),
-      this.getMultiaddr.bind(this),
+      this.getWallet.bind(this),
       HttpServer.sendAuthError
     )
 
     this.httpServer.app.post(
-      '/multiaddr',
+      '/wallet',
       urlencodedParser,
       authMgr.checkAuthentication.bind(authMgr),
       apiHelper.validateEntitiesParams.bind(apiHelper),
-      this.postMultiaddr.bind(this),
+      this.postWallet.bind(this),
       HttpServer.sendAuthError
     )
   }
 
   /**
-   * Handle multiaddr GET request
+   * Handle wallet GET request
    * @param {object} req - http request object
    * @param {object} res - http response object
    */
-  async getMultiaddr(req, res) {
+  async getWallet(req, res) {
     try {
       // Check request params
       if (!apiHelper.checkEntitiesParams(req.query))
@@ -63,7 +62,7 @@ class MultiaddrRestApi {
       // Parse params
       const entities = apiHelper.parseEntitiesParams(req.query)
 
-      const result = await walletService.getWalletInfo(
+      const result = await walletService.getFullWalletInfo(
         entities.active,
         entities.legacy,
         entities.bip49,
@@ -86,17 +85,17 @@ class MultiaddrRestApi {
           ${req.query.bip49 ? req.query.bip49 : ''} \
           ${req.query.bip84 ? req.query.bip84 : ''}`
 
-        Logger.info(`API : Completed GET /multiaddr ${strParams}`)
+        Logger.info(`API : Completed GET /wallet ${strParams}`)
       }
     }
   }
 
   /**
-   * Handle multiaddr POST request
+   * Handle wallet POST request
    * @param {object} req - http request object
    * @param {object} res - http response object
    */
-  async postMultiaddr(req, res) {
+  async postWallet(req, res) {
     try {
       // Check request params
       if (!apiHelper.checkEntitiesParams(req.body))
@@ -105,7 +104,7 @@ class MultiaddrRestApi {
       // Parse params
       const entities = apiHelper.parseEntitiesParams(req.body)
 
-      const result = await walletService.getWalletInfo(
+      const result = await walletService.getFullWalletInfo(
         entities.active,
         entities.legacy,
         entities.bip49,
@@ -127,11 +126,11 @@ class MultiaddrRestApi {
           ${req.body.bip49 ? req.body.bip49 : ''} \
           ${req.body.bip84 ? req.body.bip84 : ''}`
 
-        Logger.info(`API : Completed POST /multiaddr ${strParams}`)
+        Logger.info(`API : Completed POST /wallet ${strParams}`)
       }
     }
   }
 
 }
 
-module.exports = MultiaddrRestApi
+module.exports = WalletRestApi
