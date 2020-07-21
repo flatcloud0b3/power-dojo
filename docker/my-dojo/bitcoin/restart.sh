@@ -24,6 +24,7 @@ bitcoind_options=(
   -rpcpassword=$BITCOIND_RPC_PASSWORD
   -rpcport=28256
   -rpcthreads=$BITCOIND_RPC_THREADS
+  -rpcworkqueue=$BITCOIND_RPC_WORK_QUEUE
   -rpcuser=$BITCOIND_RPC_USER
   -server=1
   -txindex=1
