@@ -2,6 +2,7 @@ FROM    debian:buster
 
 ENV     TOR_HOME            /var/lib/tor
 ENV     TOR_URL             https://archive.torproject.org/tor-package-archive
+ENV     TOR_MIRROR_URL      https://tor.eff.org/dist
 ENV     TOR_VERSION         0.4.2.7
 ENV     TOR_GPG_KS_URI      hkp://keyserver.ubuntu.com:80
 ENV     TOR_GPG_KEY1        0xEB5A896A28988BF5
@@ -23,8 +24,16 @@ RUN     set -ex && \
         apt-get install -y git libevent-dev zlib1g-dev libssl-dev gcc make automake ca-certificates autoconf musl-dev coreutils gpg wget && \
         mkdir -p /usr/local/src/ && \
         cd /usr/local/src && \
-        wget -qO "tor-$TOR_VERSION.tar.gz" "$TOR_URL/tor-$TOR_VERSION.tar.gz" && \
-        wget -qO "tor-$TOR_VERSION.tar.gz.asc" "$TOR_URL/tor-$TOR_VERSION.tar.gz.asc" && \
+        res=0; \
+        wget -qO "tor-$TOR_VERSION.tar.gz" "$TOR_URL/tor-$TOR_VERSION.tar.gz" || res=$?; \
+        if [ $res -gt 0 ]; then \
+          wget -qO "tor-$TOR_VERSION.tar.gz" "$TOR_MIRROR_URL/tor-$TOR_VERSION.tar.gz"; \
+        fi && \
+        res=0; \
+        wget -qO "tor-$TOR_VERSION.tar.gz.asc" "$TOR_URL/tor-$TOR_VERSION.tar.gz.asc" || res=$?; \
+        if [ $res -gt 0 ]; then \
+          wget -qO "tor-$TOR_VERSION.tar.gz.asc" "$TOR_MIRROR_URL/tor-$TOR_VERSION.tar.gz.asc"; \
+        fi && \
         gpg --keyserver "$TOR_GPG_KS_URI" --recv-keys "$TOR_GPG_KEY1" && \
         gpg --keyserver "$TOR_GPG_KS_URI" --recv-keys "$TOR_GPG_KEY2" && \
         gpg --keyserver "$TOR_GPG_KS_URI" --recv-keys "$TOR_GPG_KEY3" && \
