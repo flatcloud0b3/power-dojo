@@ -96,7 +96,8 @@ stop() {
     # Check if the bitcoin daemon is still up
     # wait 3mn max
     i="0"
-    while [ $i -lt 18 ]
+    nbIters=$(( $BITCOIND_SHUTDOWN_DELAY / 10 ))
+    while [ $i -lt $nbIters ]
     do
       echo "Waiting for shutdown of Bitcoin server."
       # Check if bitcoind rpc api is responding
@@ -115,7 +116,7 @@ stop() {
     done
     # Bitcoin daemon is still up
     # => force close
-    if [ $i -eq 18 ]; then
+    if [ $i -eq $nbIters ]; then
       echo "Force shutdown of Bitcoin server."
     fi
   fi

@@ -105,3 +105,14 @@ BITCOIND_ZMQ_RAWTXS=9501
 # Set value to 9502 if BITCOIND_INSTALL is set to 'on'
 # Type: integer
 BITCOIND_ZMQ_BLK_HASH=9502
+
+
+#
+# SHUTDOWN
+#
+
+# Max delay for bitcoind shutdown (expressed in seconds)
+# Defines how long Dojo waits for a clean shutdown of bitcoind before shutting down the bitcoind container
+# This parameter is inactive if BITCOIND_INSTALL is set to 'off'
+# Type: integer
+BITCOIND_SHUTDOWN_DELAY=180
