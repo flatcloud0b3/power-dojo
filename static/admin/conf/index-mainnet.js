@@ -1,4 +1,4 @@
-var conf = {
+const conf = {
 
   // Admin tool
   adminTool: {
@@ -22,4 +22,4 @@ var conf = {
     statusPushtx: 'status'
   }
 
-};
+}

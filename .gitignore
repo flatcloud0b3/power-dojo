@@ -11,3 +11,4 @@ private-tests/
 static/admin/conf/index.js
 static/admin-legacy/
 *.log
+static/admin-legacy
