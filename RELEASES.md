@@ -22,6 +22,13 @@
 ### Notable changes ###
 
 
+#### New version of the Maintenance Tool ####
+
+This release introduces a new version of Dojo Maintenance Tool (DMT).
+
+The DMT has been revamped in order to provide a more user-friendly experience.
+
+
 #### New configuration property BITCOIND_RPC_WORK_QUEUE ####
 
 This new configuration property added to docker-bitcoind.conf allows to set a custom max depth for the RPC work queue of the full node.
@@ -64,6 +71,7 @@ Starting with this version, the /multiaddr and /unspent endpoints are marked as 
 - [#mr155](https://code.samourai.io/dojo/samourai-dojo/-/merge_requests/155) upgrade bitcoind to bitcoin core 0.20.1
 - [#mr156](https://code.samourai.io/dojo/samourai-dojo/-/merge_requests/156) automatic fallback to mirror of tor archive
 - [#mr157](https://code.samourai.io/dojo/samourai-dojo/-/merge_requests/157) add new config property BITCOIND_SHUTDOWN_DELAY
+- [#mr160](https://code.samourai.io/dojo/samourai-dojo/-/merge_requests/160) new version of the maintenance tool
 
 
 #### Bug fixes ####
