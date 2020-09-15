@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>DOJO // MAINTENANCE TOOL</title>
+  <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="../css/bootstrap-theme.min.css">
+  <link rel="stylesheet" type="text/css" href="../css/style.css">
+  <script src="../lib/jquery-3.5.1.min.js"></script>
+  <script src="../lib/jquery.qrcode.min.js"></script>
+  <script src="../conf/index.js"></script>
+  <script src="../lib/common-script.js"></script>
+  <script src="../lib/api-wrapper.js"></script>
+  <script src="../lib/auth-utils.js"></script>
+  <script src="../lib/format-utils.js"></script>
+  <script src="../lib/messages.js"></script>
+  <script src="index.js"></script>
+</head>
+
+<body class="dmt">
+  <div id="top-container" class="container" style="display: none">
+    <!-- HEADER -->
+    <div id="header" class="row">
+      <div class="col-xs-9">
+        <h1 class="title"><span>DOJO // MAINTENANCE TOOL</span> <span id="dojo-version" class="beta">beta</span></h1>
+      </div>
+      <div class="col-xs-3 login-box">
+        <a id="btn-logout" style="display: inline;" href="#" title="DISCONNECT">
+          <img src="../icons/ic_power_settings_new_white_24dp_1x.png" class="mini-icon"/>
+        </a>
+      </div>
+    </div>
+
+    <div class="spacer30"></div>
+
+    <!-- BODY -->
+    <div id="body" class="row">
+      <!-- MENU -->
+      <div id="menu" class="col-xs-2">
+        <div class="title">
+          <h1>MONITORING</h1>
+        </div>
+        <ul id="tab-menu_list" class="nav nav-pills nav-stacked">
+          <li id="link-welcome" style="display: none;">
+            <a href="#">WELCOME</a>
+          </li>
+          <li id="link-status">
+            <a href="#">DOJO STATUS</a>
+          </li>
+          <li id="link-pushtx">
+            <a href="#">PUSHTX STATUS</a>
+          </li>
+        </ul>
+        <div class="spacer20"></div>
+        <div class="title">
+          <h1>TOOLS</h1>
+        </div>
+        <ul id="tab-menu_list2" class="nav nav-pills nav-stacked">
+          <li id="link-pairing">
+            <a href="#">PAIRING</a>
+          </li>
+          <li id="link-xpubs-tools">
+            <a href="#">XPUBS TOOL</a>
+          </li>
+          <li id="link-addresses-tools">
+            <a href="#">ADDRESSES TOOL</a>
+          </li>
+          <li id="link-txs-tools">
+            <a href="#">TRANSACTIONS TOOL</a>
+          </li>
+          <li id="link-blocks-rescan">
+            <a href="#">BLOCKS RESCAN</a>
+          </li>
+        </ul>
+        <div class="spacer20"></div>
+        <div class="title">
+          <h1>HELP</h1>
+        </div>
+        <ul id="tab-menu_list3" class="nav nav-pills nav-stacked">
+          <li id="link-help-dmt">
+            <a href="#">HELP DMT</a>
+          </li>
+          <li id="link-dojo-telegram">
+            <a href="https://t.me/samourai_dojo" target="_blank">DOJO TELEGRAM CHAT</a>
+          </li>
+          <li id="link-wp-telegram">
+            <a href="https://t.me/whirlpool_trollbox" target="_blank">WHIRLPOOL TELEGRAM CHAT</a>
+          </li>
+          <li id="link-sw-support">
+            <a href="https://t.me/SamouraiWallet" target="_blank">SAMOURAI TELEGRAM CHAT</a>
+          </li>
+        </ul>
+      </div>
+      <div class="col-xs-1"></div>
+      <!-- MAIN AREA -->
+      <div id="main" class="col-xs-9">
+        <!-- WELCOME -->
+        <div id="screen-welcome"
+          include-html="welcome/welcome.html"
+          style="display: none">
+        </div>
+        <!-- STATUS -->
+        <div id="screen-status"
+          include-html="status/status.html"
+          style="display: none">
+        </div>
+        <!-- PUSH TX -->
+        <div id="screen-pushtx"
+          include-html="pushtx/pushtx.html"
+          style="display: none">
+        </div>
+        <!-- PAIRING -->
+        <div id="screen-pairing"
+          include-html="pairing/pairing.html"
+          style="display: none">
+        </div>
+        <!-- XPUBS TOOLS -->
+        <div id="screen-xpubs-tools"
+          include-html="xpubs-tools/xpubs-tools.html"
+          style="display: none">
+        </div>
+        <!-- ADDRESSES TOOLS -->
+        <div id="screen-addresses-tools"
+          include-html="addresses-tools/addresses-tools.html"
+          style="display: none">
+        </div>
+        <!-- TRANSACTIONS TOOLS -->
+        <div id="screen-txs-tools"
+          include-html="txs-tools/txs-tools.html"
+          style="display: none">
+        </div>
+        <!-- BLOCKS RESCAN -->
+        <div id="screen-blocks-rescan"
+          include-html="blocks-rescan/blocks-rescan.html"
+          style="display: none">
+        </div>
+        <!-- HELP DMT -->
+        <div id="screen-help-dmt"
+          include-html="welcome/welcome.html"
+          style="display: none">
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- MSG BOX -->
+  <div id="box-msg"
+    include-html="msg-box/msg-box.html">
+  </div>
+</body>
+
+</html>
