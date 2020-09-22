@@ -353,12 +353,12 @@ onion() {
 
   if [ "$WHIRLPOOL_INSTALL" == "on" ]; then
     V3_ADDR_WHIRLPOOL=$( docker exec -it tor cat /var/lib/tor/hsv3whirlpool/hostname )
-    echo " * Your personal Whirlpool client running on this Dojo = $V3_ADDR_WHIRLPOOL (do not share)"
+    echo " * Your personal Whirlpool client running on this Dojo (do not share) = $V3_ADDR_WHIRLPOOL"
   fi
 
   if [ "$BITCOIND_INSTALL" == "on" ]; then
     V2_ADDR_BTCD=$( docker exec -it tor cat /var/lib/tor/hsv2bitcoind/hostname )
-    echo " * Your local bitcoind = $V2_ADDR_BTCD (do not share)"
+    echo " * Your local bitcoind (do not share) = $V2_ADDR_BTCD"
   fi
 
   echo " "
