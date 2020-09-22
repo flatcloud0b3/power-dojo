@@ -81,6 +81,7 @@ Starting with this version, the /multiaddr and /unspent endpoints are marked as 
 #### Bug fixes ####
 
 - [#mr158](https://code.samourai.io/dojo/samourai-dojo/-/merge_requests/158) fix parsing of message in notification service
+- [dbf61217](https://code.samourai.io/dojo/samourai-dojo/-/commit/dbf6121779385f19e99167298ac8a6bf3411422a) fix presentation of message returned by dojo.sh onion
 
 
 #### Security ####
