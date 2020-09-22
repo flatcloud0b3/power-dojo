@@ -72,6 +72,8 @@ Starting with this version, the /multiaddr and /unspent endpoints are marked as 
 - [#mr156](https://code.samourai.io/dojo/samourai-dojo/-/merge_requests/156) automatic fallback to mirror of tor archive
 - [#mr157](https://code.samourai.io/dojo/samourai-dojo/-/merge_requests/157) add new config property BITCOIND_SHUTDOWN_DELAY
 - [#mr160](https://code.samourai.io/dojo/samourai-dojo/-/merge_requests/160) new version of the maintenance tool
+- [#mr161](https://code.samourai.io/dojo/samourai-dojo/-/merge_requests/161) improve the xpub tools screen
+- [#mr162](https://code.samourai.io/dojo/samourai-dojo/-/merge_requests/162) rework response returned by dojo.sh onion
 - [a548bce6](https://code.samourai.io/dojo/samourai-dojo/-/commit/a548bce6dea78297f21368c1e04ee1a021f1f524) bump dojo version in index-example.js
 
 
@@ -88,7 +90,13 @@ Starting with this version, the /multiaddr and /unspent endpoints are marked as 
 
 #### Credits ###
 
+- Crazyk031
 - kenshin-samourai
+- LaurentMT
+- RockyRococo
+- sarath
+- SatoshiThreepwood
+- zeroleak
 
 
 <a name="1_7_0"/>
