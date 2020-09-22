@@ -2,6 +2,7 @@ const screenXpubsToolsScript = {
 
   explorerInfo: null,
   currentXpub: null,
+  isReimport: false,
 
   initPage: function() {
     this.getExplorerInfo()
@@ -13,7 +14,7 @@ const screenXpubsToolsScript = {
     $('#btn-xpub-rescan-cancel').click(() => {this.hideRescanForm()})
     $('#btn-xpub-import-go').click(() => {this.importXpub()})
     $('#btn-xpub-details-retype').click(() => {this.showImportForm(true)})
-    $('#btn-xpub-import-cancel').click(() => {this.showSearchForm()})
+    $('#btn-xpub-import-cancel').click(() => {this.hideImportForm(this.isReimport)})
     $('#xpubs-tool').keyup(evt => {
       if (evt.keyCode === 13) {
         this.searchXpub()
@@ -210,6 +211,8 @@ const screenXpubsToolsScript = {
   },
 
   showImportForm: function(isReimport) {
+    this.isReimport = isReimport
+
     $('#xpubs-tool-search-form').hide()
     $('#xpubs-tool-details').hide()
 
@@ -225,6 +228,13 @@ const screenXpubsToolsScript = {
     const xpubShortLbl = `"${this.currentXpub.substring(0, 20)}...${this.currentXpub.substring(xpubLen-20, xpubLen)}"`
     $('#import-xpub').text(xpubShortLbl)
     $('#xpubs-tool-import').show()
+  },
+
+  hideImportForm: function(isReimport) {
+    if (isReimport)
+      this.showXpubDetails()
+    else
+      this.showSearchForm()
   },
 
   showXpubDetails: function() {
