@@ -1,39 +1,41 @@
-var lib_msg = {
+const lib_msg = {
+
   // Extracts jqxhr error message
   extractJqxhrErrorMsg: function(jqxhr) {
-    let hasErrorMsg = ('responseJSON' in jqxhr) && 
-      (jqxhr['responseJSON'] != null) && 
-      ('message' in jqxhr['responseJSON']);
+    let hasErrorMsg = ('responseJSON' in jqxhr) &&
+      (jqxhr['responseJSON'] != null) &&
+      ('error' in jqxhr['responseJSON'])
 
-    return hasErrorMsg ? jqxhr['responseJSON']['message'] : jqxhr.statusText;
+    return hasErrorMsg ? jqxhr['responseJSON']['error'] : jqxhr.statusText
   },
-  
+
   // UI functions
   addTextinID: function(text, id){
-    $(id).html(text.toUpperCase());
+    $(id).html(text.toUpperCase())
   },
 
   displayMessage: function(text){
-    this.addTextinID('', '#errors');
-    this.addTextinID('', '#info');
-    this.addTextinID(text, '#msg');
+    this.addTextinID('', '#errors')
+    this.addTextinID('', '#info')
+    this.addTextinID(text, '#msg')
   },
 
   displayErrors: function(text){
-    this.addTextinID('', '#msg');
-    this.addTextinID('', '#info');
-    this.addTextinID(text, '#errors');
+    this.addTextinID('', '#msg')
+    this.addTextinID('', '#info')
+    this.addTextinID(text, '#errors')
   },
 
   displayInfo: function(text){
-    this.addTextinID('', '#msg');
-    this.addTextinID('', '#errors');
-    this.addTextinID(text, '#info');
+    this.addTextinID('', '#msg')
+    this.addTextinID('', '#errors')
+    this.addTextinID(text, '#info')
   },
-  
+
   cleanMessagesUi: function() {
-    this.addTextinID('', '#msg');
-    this.addTextinID('', '#errors');
-    this.addTextinID('', '#info');
+    this.addTextinID('', '#msg')
+    this.addTextinID('', '#errors')
+    this.addTextinID('', '#info')
   }
+
 }

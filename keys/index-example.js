@@ -15,7 +15,7 @@ module.exports = {
     /*
      * Dojo version
      */
-    dojoVersion: '1.6.0',
+    dojoVersion: '1.8.0',
     /*
      * Bitcoind
      */
@@ -36,7 +36,7 @@ module.exports = {
       // ZMQ Block notifications
       zmqBlk: 'tcp://127.0.0.1:9502',
       // Fee type (estimatesmartfee)
-      feeType: 'ECONOMICAL'      
+      feeType: 'ECONOMICAL'
     },
     /*
      * MySQL database
@@ -201,10 +201,10 @@ module.exports = {
       minNbChildren: 2,
       // Max number of child processes allowed
       maxNbChildren: 2,
-      // Max duration 
+      // Max duration
       acquireTimeoutMillis: 60000,
       // Parallel derivation threshold
-      // (use parallel derivation if number of addresses to be derived 
+      // (use parallel derivation if number of addresses to be derived
       //  is greater than thresholdParalleDerivation)
       thresholdParallelDerivation: 10
     },
@@ -232,7 +232,7 @@ module.exports = {
    * Testnet parameters
    */
   testnet: {
-    dojoVersion: '1.6.0',
+    dojoVersion: '1.8.0',
     bitcoind: {
       rpc: {
         user: 'user',

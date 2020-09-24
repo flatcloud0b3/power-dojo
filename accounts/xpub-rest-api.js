@@ -49,6 +49,14 @@ class XPubRestApi {
     )
 
     this.httpServer.app.get(
+      '/xpub/:xpub/import/status',
+      authMgr.checkAuthentication.bind(authMgr),
+      this.validateArgsGetXpub.bind(this),
+      this.getXpubImportStatus.bind(this),
+      HttpServer.sendAuthError
+    )
+
+    this.httpServer.app.get(
       '/xpub/:xpub',
       authMgr.checkAuthentication.bind(authMgr),
       this.validateArgsGetXpub.bind(this),
@@ -199,6 +207,41 @@ class XPubRestApi {
 
     } finally {
       debugApi && Logger.info(`API : Completed GET /xpub/${req.params.xpub}`)
+    }
+  }
+
+  /**
+   * Handle xPub/import/status GET request
+   * @param {object} req - http request object
+   * @param {object} res - http response object
+   */
+  async getXpubImportStatus(req, res) {
+    try {
+      let xpub
+
+      // Extracts arguments
+      const argXpub = req.params.xpub
+
+      // Translate xpub if needed
+      try {
+        const xlatXpub = this.xlatHdAccount(argXpub)
+        xpub = xlatXpub.xpub
+      } catch(e) {
+        return HttpServer.sendError(res, e)
+      }
+
+      const ret = {
+        import_in_progress: hdaService.importInProgress(xpub)
+      }
+
+      HttpServer.sendOkData(res, ret)
+
+    } catch(e) {
+      Logger.error(e, 'API : XpubRestApi.getXpubImportStatus()')
+      HttpServer.sendError(res, e)
+
+    } finally {
+      debugApi && Logger.info(`API : Completed GET /xpub/${req.params.xpub}/import/status`)
     }
   }
 

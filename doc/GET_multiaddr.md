@@ -1,5 +1,7 @@
 # Get Multiaddr
 
+Note: Starting with Dojo 1.8.0, this API endpoint is deprecated. See the new [/wallet endpoint](./GET_wallet.md)
+
 Request details about a collection of HD accounts and/or loose addresses and/or pubkeys (derived in 3 formats P2PKH, P2WPKH/P2SH, P2WPKH Bech32).
 
 

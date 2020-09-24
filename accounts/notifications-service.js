@@ -80,7 +80,7 @@ class NotificationsService {
         })
 
         conn.on('message', msg => {
-          if (msg.type == 'utf8') 
+          if (msg.type == 'utf8')
             this._handleWSMessage(msg.utf8Data, conn)
           else
             this._closeWSConnection(conn, true)
@@ -95,7 +95,7 @@ class NotificationsService {
       }
     })
   }
-  
+
   /**
    * Close a web sockets connection
    * @param {object} conn - web socket connection
@@ -157,11 +157,11 @@ class NotificationsService {
       // Check authentication (if needed)
       if (authMgr.authActive && authMgr.isMandatory) {
         try {
-          authMgr.isAuthenticated(msg.at)
+          authMgr.isAuthenticated(data.at)
         } catch(e) {
           this.notifyAuthError(e, conn.id)
           return
-        }        
+        }
       }
 
       switch(data.op) {
@@ -236,7 +236,7 @@ class NotificationsService {
       return false
 
     const index = this.subs[topic].indexOf(cid)
-    if (index < 0) 
+    if (index < 0)
       return false
 
     this.subs[topic].splice(index, 1)
@@ -261,7 +261,7 @@ class NotificationsService {
       return
 
     for (let cid of this.subs[topic]) {
-      if (!this.conn[cid]) 
+      if (!this.conn[cid])
         continue
 
       try {
@@ -469,7 +469,7 @@ class NotificationsService {
       Logger.error(e, `API : NotificationsService.notifyAuthError() : Trouble sending authentication error to client ${cid}`)
     }
   }
-  
+
 
 }
 

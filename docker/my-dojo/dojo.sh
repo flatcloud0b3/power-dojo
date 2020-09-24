@@ -57,7 +57,7 @@ docker_up() {
   yamlFiles=$(select_yaml_files)
   eval "docker-compose $yamlFiles up $1 -d"
 }
-  
+
 # Start
 start() {
   # Check if dojo is running (check the db container)
@@ -96,7 +96,8 @@ stop() {
     # Check if the bitcoin daemon is still up
     # wait 3mn max
     i="0"
-    while [ $i -lt 18 ]
+    nbIters=$(( $BITCOIND_SHUTDOWN_DELAY / 10 ))
+    while [ $i -lt $nbIters ]
     do
       echo "Waiting for shutdown of Bitcoin server."
       # Check if bitcoind rpc api is responding
@@ -115,7 +116,7 @@ stop() {
     done
     # Bitcoin daemon is still up
     # => force close
-    if [ $i -eq 18 ]; then
+    if [ $i -eq $nbIters ]; then
       echo "Force shutdown of Bitcoin server."
     fi
   fi
@@ -255,7 +256,7 @@ uninstall() {
 del_images_for() {
   # $1: image name
   # $2: most recent version of the image (do not delete this one)
-  docker image ls | grep "$1" | sed "s/ \+/,/g" | cut -d"," -f2 | while read -r version ; do 
+  docker image ls | grep "$1" | sed "s/ \+/,/g" | cut -d"," -f2 | while read -r version ; do
     if [ "$2" != "$version" ]; then
       docker image rm "$1:$version"
     fi
@@ -336,22 +337,32 @@ upgrade() {
 
 # Display the onion address
 onion() {
-  if [ "$EXPLORER_INSTALL" == "on" ]; then
-    V3_ADDR_EXPLORER=$( docker exec -it tor cat /var/lib/tor/hsv3explorer/hostname )
-    echo "Explorer hidden service address = $V3_ADDR_EXPLORER"
-  fi
+  echo " "
+  echo "WARNING: Do not share these onion addresses with anyone!"
+  echo "         To allow another person to use this Dojo with their Samourai Wallet,"
+  echo "         you should share the QRCodes provided by the Maintenance Tool."
+  echo " "
 
   V3_ADDR=$( docker exec -it tor cat /var/lib/tor/hsv3dojo/hostname )
-  echo "Maintenance Tool hidden service address = $V3_ADDR"
+  echo "Dojo API and Maintenance Tool = $V3_ADDR"
+  echo " "
+
+  if [ "$EXPLORER_INSTALL" == "on" ]; then
+    V3_ADDR_EXPLORER=$( docker exec -it tor cat /var/lib/tor/hsv3explorer/hostname )
+    echo "Block Explorer = $V3_ADDR_EXPLORER"
+    echo " "
+  fi
 
   if [ "$WHIRLPOOL_INSTALL" == "on" ]; then
     V3_ADDR_WHIRLPOOL=$( docker exec -it tor cat /var/lib/tor/hsv3whirlpool/hostname )
-    echo "Whirlpool API hidden service address = $V3_ADDR_WHIRLPOOL"
+    echo "Your private Whirlpool client (do not share) = $V3_ADDR_WHIRLPOOL"
+    echo " "
   fi
 
   if [ "$BITCOIND_INSTALL" == "on" ]; then
     V2_ADDR_BTCD=$( docker exec -it tor cat /var/lib/tor/hsv2bitcoind/hostname )
-    echo "bitcoind hidden service address = $V2_ADDR_BTCD"
+    echo "Your local bitcoind (do not share) = $V2_ADDR_BTCD"
+    echo " "
   fi
 }
 
@@ -390,7 +401,7 @@ display_logs() {
     docker-compose $yamlFiles logs --tail=50 --follow $1
   else
     docker-compose $yamlFiles logs --tail=$2 $1
-  fi 
+  fi
 }
 
 logs() {
@@ -433,7 +444,7 @@ logs() {
       fi
       ;;
     * )
-      services="nginx node tor db" 
+      services="nginx node tor db"
       if [ "$BITCOIND_INSTALL" == "on" ]; then
         services="$services bitcoind"
       fi

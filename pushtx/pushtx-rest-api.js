@@ -94,7 +94,7 @@ class PushTxRestApi {
    * Handle Status GET request
    * @param {object} req - http request object
    * @param {object} res - http response object
-   */  
+   */
   async getStatus(req, res) {
     try {
       const currStatus = await status.getCurrent()
@@ -108,7 +108,7 @@ class PushTxRestApi {
    * Handle status/schedule GET request
    * @param {object} req - http request object
    * @param {object} res - http response object
-   */  
+   */
   async getStatusSchedule(req, res) {
     try {
       const ret = await status.getScheduledTransactions()
@@ -178,7 +178,7 @@ class PushTxRestApi {
         HttpServer.sendOkData(res, txid)
       } catch(e) {
         this._traceError(res, e)
-      } 
+      }
     })
   }
 

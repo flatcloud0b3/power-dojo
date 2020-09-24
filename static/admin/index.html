@@ -8,7 +8,7 @@
   <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
   <link rel="stylesheet" type="text/css" href="css/bootstrap-theme.min.css">
   <link rel="stylesheet" type="text/css" href="css/style.css">
-  <script src="lib/jquery-3.2.1.min.js"></script>
+  <script src="lib/jquery-3.5.1.min.js"></script>
   <script src="conf/index.js"></script>
   <script src="lib/common-script.js"></script>
   <script src="lib/api-wrapper.js"></script>
@@ -40,17 +40,10 @@
       </div>
       <div class="col-xs-4"></div>
     </div>
-
-    <!-- MESSAGES -->
-    <div class="row msg-boxes">
-      <div class="col-xs-4"></div>
-      <div class="col-xs-4">
-          <div id="msg" class="msg"></div>
-          <div id="errors" class="msg-error"></div>
-          <div id="info" class="msg-info"></div>
-      </div>
-      <div class="col-xs-4"></div>
-    </div>
+  </div>
+  <!-- MSG BOX -->
+  <div id="box-msg"
+    include-html="dmt/msg-box/msg-box.html">
   </div>
 </body>
 

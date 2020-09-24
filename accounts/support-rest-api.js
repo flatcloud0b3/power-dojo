@@ -44,7 +44,7 @@ class SupportRestApi {
       this.getAddressInfo.bind(this),
       HttpServer.sendAuthError
     )
-    
+
     this.httpServer.app.get(
       `/${keys.prefixes.support}/address/:addr/rescan`,
       authMgr.checkHasAdminProfile.bind(authMgr),
@@ -52,7 +52,7 @@ class SupportRestApi {
       this.getAddressRescan.bind(this),
       HttpServer.sendAuthError
     )
-    
+
     this.httpServer.app.get(
       `/${keys.prefixes.support}/xpub/:xpub/info`,
       authMgr.checkHasAdminProfile.bind(authMgr),
@@ -60,7 +60,7 @@ class SupportRestApi {
       this.getXpubInfo.bind(this),
       HttpServer.sendAuthError
     )
-    
+
     this.httpServer.app.get(
       `/${keys.prefixes.support}/xpub/:xpub/rescan`,
       authMgr.checkHasAdminProfile.bind(authMgr),
@@ -140,7 +140,7 @@ class SupportRestApi {
         url: `/${keys.prefixes.support}/xpub/${info.xpub}/rescan`
       })
     }*/
-    
+
     return JSON.stringify(res, null, 2)
   }
 
@@ -167,7 +167,7 @@ class SupportRestApi {
           url: `/${keys.prefixes.support}/address/${address}/info`
         }]*/
       }
-    
+
       await addrService.rescan(address)
       HttpServer.sendRawData(res, JSON.stringify(ret, null, 2))
 
@@ -229,7 +229,7 @@ class SupportRestApi {
       task: 'Rescan the whole HD account from remote sources',
       url: `/${keys.prefixes.support}/xpub/${info.xpub}/rescan`
     }]*/
-    
+
     return JSON.stringify(res, null, 2)
   }
 

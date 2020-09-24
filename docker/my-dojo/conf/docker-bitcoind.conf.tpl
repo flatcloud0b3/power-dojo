@@ -26,6 +26,10 @@ BITCOIND_DB_CACHE=1024
 # Type: integer
 BITCOIND_RPC_THREADS=6
 
+# RPC Work queue size
+# Type: integer
+BITCOIND_RPC_WORK_QUEUE=16
+
 # Mempool expiry in hours
 # Defines how long transactions stay in your local mempool before expiring
 # Type: integer
@@ -101,3 +105,14 @@ BITCOIND_ZMQ_RAWTXS=9501
 # Set value to 9502 if BITCOIND_INSTALL is set to 'on'
 # Type: integer
 BITCOIND_ZMQ_BLK_HASH=9502
+
+
+#
+# SHUTDOWN
+#
+
+# Max delay for bitcoind shutdown (expressed in seconds)
+# Defines how long Dojo waits for a clean shutdown of bitcoind before shutting down the bitcoind container
+# This parameter is inactive if BITCOIND_INSTALL is set to 'off'
+# Type: integer
+BITCOIND_SHUTDOWN_DELAY=180

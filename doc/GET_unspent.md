@@ -1,5 +1,7 @@
 # Get Unspent
 
+Note: Starting with Dojo 1.8.0, this API endpoint is deprecated. See the new [/wallet endpoint](./GET_wallet.md)
+
 Request a list of unspent transaction outputs from a collection of HD accounts and/or loose addresses and/or pubkeys (derived in 3 formats P2PKH, P2WPKH/P2SH, P2WPKH Bech32).
 
 

@@ -20,6 +20,7 @@ RUN     set -ex && \
 
 # Install Tor
 ENV     WHIRLPOOL_TOR_URL             https://archive.torproject.org/tor-package-archive
+ENV     WHIRLPOOL_TOR_MIRROR_URL      https://tor.eff.org/dist
 ENV     WHIRLPOOL_TOR_VERSION         0.4.2.7
 ENV     WHIRLPOOL_TOR_GPG_KS_URI      hkp://keyserver.ubuntu.com:80
 ENV     WHIRLPOOL_TOR_GPG_KEY1        0xEB5A896A28988BF5
@@ -30,8 +31,16 @@ ENV     WHIRLPOOL_TOR_GPG_KEY4        0x6AFEE6D49E92B601
 RUN     set -ex && \
         mkdir -p /usr/local/src/ && \
         cd /usr/local/src && \
-        wget -qO "tor-$WHIRLPOOL_TOR_VERSION.tar.gz" "$WHIRLPOOL_TOR_URL/tor-$WHIRLPOOL_TOR_VERSION.tar.gz" && \
-        wget -qO "tor-$WHIRLPOOL_TOR_VERSION.tar.gz.asc" "$WHIRLPOOL_TOR_URL/tor-$WHIRLPOOL_TOR_VERSION.tar.gz.asc" && \
+        res=0; \
+        wget -qO "tor-$WHIRLPOOL_TOR_VERSION.tar.gz" "$WHIRLPOOL_TOR_URL/tor-$WHIRLPOOL_TOR_VERSION.tar.gz" || res=$?; \
+        if [ $res -gt 0 ]; then \
+          wget -qO "tor-$WHIRLPOOL_TOR_VERSION.tar.gz" "$WHIRLPOOL_TOR_MIRROR_URL/tor-$WHIRLPOOL_TOR_VERSION.tar.gz"; \
+        fi && \
+        res=0; \
+        wget -qO "tor-$WHIRLPOOL_TOR_VERSION.tar.gz.asc" "$WHIRLPOOL_TOR_URL/tor-$WHIRLPOOL_TOR_VERSION.tar.gz.asc" || res=$?; \
+        if [ $res -gt 0 ]; then \
+          wget -qO "tor-$WHIRLPOOL_TOR_VERSION.tar.gz.asc" "$WHIRLPOOL_TOR_MIRROR_URL/tor-$WHIRLPOOL_TOR_VERSION.tar.gz.asc" ; \
+        fi && \
         gpg --keyserver "$WHIRLPOOL_TOR_GPG_KS_URI" --recv-keys "$WHIRLPOOL_TOR_GPG_KEY1" && \
         gpg --keyserver "$WHIRLPOOL_TOR_GPG_KS_URI" --recv-keys "$WHIRLPOOL_TOR_GPG_KEY2" && \
         gpg --keyserver "$WHIRLPOOL_TOR_GPG_KS_URI" --recv-keys "$WHIRLPOOL_TOR_GPG_KEY3" && \
