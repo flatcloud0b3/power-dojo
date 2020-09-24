@@ -339,29 +339,31 @@ upgrade() {
 onion() {
   echo " "
   echo "WARNING: Do not share these onion addresses with anyone!"
-  echo "         To allow another person to use this Dojo with her Samourai Wallet,"
+  echo "         To allow another person to use this Dojo with their Samourai Wallet,"
   echo "         you should share the QRCodes provided by the Maintenance Tool."
   echo " "
 
   V3_ADDR=$( docker exec -it tor cat /var/lib/tor/hsv3dojo/hostname )
-  echo " * Dojo API and Maintenance Tool = $V3_ADDR"
+  echo "Dojo API and Maintenance Tool = $V3_ADDR"
+  echo " "
 
   if [ "$EXPLORER_INSTALL" == "on" ]; then
     V3_ADDR_EXPLORER=$( docker exec -it tor cat /var/lib/tor/hsv3explorer/hostname )
-    echo " * Block Explorer = $V3_ADDR_EXPLORER"
+    echo "Block Explorer = $V3_ADDR_EXPLORER"
+    echo " "
   fi
 
   if [ "$WHIRLPOOL_INSTALL" == "on" ]; then
     V3_ADDR_WHIRLPOOL=$( docker exec -it tor cat /var/lib/tor/hsv3whirlpool/hostname )
-    echo " * Your personal Whirlpool client running on this Dojo (do not share) = $V3_ADDR_WHIRLPOOL"
+    echo "Your private Whirlpool client (do not share) = $V3_ADDR_WHIRLPOOL"
+    echo " "
   fi
 
   if [ "$BITCOIND_INSTALL" == "on" ]; then
     V2_ADDR_BTCD=$( docker exec -it tor cat /var/lib/tor/hsv2bitcoind/hostname )
-    echo " * Your local bitcoind (do not share) = $V2_ADDR_BTCD"
+    echo "Your local bitcoind (do not share) = $V2_ADDR_BTCD"
+    echo " "
   fi
-
-  echo " "
 }
 
 # Display the version of this dojo
