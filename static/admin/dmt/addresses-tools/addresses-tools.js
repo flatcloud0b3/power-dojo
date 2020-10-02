@@ -73,7 +73,7 @@ const screenAddressesToolsScript = {
   },
 
   importAddress: function() {
-    lib_msg.displayMessage('Processing address import...');
+    lib_msg.displayMessage('Processing address import. Please wait...');
     const jsonData = {'active': this.currentAddress}
     return lib_api.getWallet(jsonData)
       .then(result => {
@@ -86,7 +86,7 @@ const screenAddressesToolsScript = {
   },
 
   rescanAddress: function() {
-    lib_msg.displayMessage('Processing address rescan...');
+    lib_msg.displayMessage('Processing address rescan. Please wait...');
     return lib_api.getAddressRescan(this.currentAddress)
       .then(result => {
         this.hideRescanForm()
