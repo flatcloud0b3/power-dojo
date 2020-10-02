@@ -27,8 +27,7 @@ const statusScript = {
       $('#tracker-status-ind').css('color', '#f77c7c')
       $('#tracker-uptime').text('-')
       $('#tracker-chaintip').text('-')
-      lib_msg.displayErrors(lib_msg.extractJqxhrErrorMsg(e))
-      console.log(e)
+      lib_errors.processError(e)
     })
   },
 
@@ -58,8 +57,7 @@ const statusScript = {
       $('#node-network').text('-')
       $('#node-conn').text('-')
       $('#node-relay-fee').text('-')
-      lib_msg.displayErrors(lib_msg.extractJqxhrErrorMsg(e))
-      console.log(e)
+      lib_errors.processError(e)
     })
   },
 

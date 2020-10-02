@@ -29,8 +29,7 @@ const pushtxScript = {
       $('#pushed-uptime').text('-')
       $('#pushed-count').text('-')
       $('#pushed-amount').text('-')
-      lib_msg.displayErrors(lib_msg.extractJqxhrErrorMsg(e))
-      console.log(e)
+      lib_errors.processError(e)
     })
   },
 
@@ -48,8 +47,7 @@ const pushtxScript = {
         lib_msg.cleanMessagesUi()
       }
     }).catch(e => {
-      lib_msg.displayErrors(lib_msg.extractJqxhrErrorMsg(e))
-      console.log(e)
+      lib_errors.processError(e)
     })
   },
 

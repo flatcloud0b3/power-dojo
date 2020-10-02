@@ -32,8 +32,7 @@ const screenXpubsToolsScript = {
     lib_api.getExplorerPairingInfo().then(explorerInfo => {
       this.explorerInfo = explorerInfo
     }).catch(e => {
-      lib_msg.displayErrors(lib_msg.extractJqxhrErrorMsg(e))
-      console.log(e)
+      lib_errors.processError(e)
     })
   },
 
@@ -70,8 +69,7 @@ const screenXpubsToolsScript = {
         this.showImportForm(false)
       }
     }).catch(e => {
-      lib_msg.displayErrors(lib_msg.extractJqxhrErrorMsg(e))
-      console.log(e)
+      lib_errors.processError(e)
       throw e
     })
   },
@@ -101,8 +99,7 @@ const screenXpubsToolsScript = {
           lib_msg.displayInfo('Import complete')
         })
       }).catch(e => {
-        lib_msg.displayErrors(lib_msg.extractJqxhrErrorMsg(e))
-        console.log(e)
+        lib_errors.processError(e)
       })
   },
 
@@ -119,8 +116,7 @@ const screenXpubsToolsScript = {
           lib_msg.displayInfo('Rescan complete')
         })
       }).catch(e => {
-        lib_msg.displayErrors(lib_msg.extractJqxhrErrorMsg(e))
-        console.log(e)
+        lib_errors.processError(e)
       })
   },
 
