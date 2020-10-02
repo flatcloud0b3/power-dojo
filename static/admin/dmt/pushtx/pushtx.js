@@ -15,7 +15,7 @@ const pushtxScript = {
   },
 
   refreshPushTxStatus: function() {
-    lib_msg.displayMessage('Loading PushTx status info...');
+    //lib_msg.displayMessage('Loading PushTx status info...');
     lib_api.getPushtxStatus().then(pushTxStatus => {
       if (pushTxStatus) {
         const data = pushTxStatus['data']
@@ -23,7 +23,7 @@ const pushtxScript = {
         $('#pushed-uptime').text(uptime)
         $('#pushed-count').text(data['push']['count'])
         $('#pushed-amount').text(data['push']['amount'])
-        lib_msg.cleanMessagesUi()
+        //lib_msg.cleanMessagesUi()
       }
     }).catch(e => {
       $('#pushed-uptime').text('-')
@@ -34,7 +34,7 @@ const pushtxScript = {
   },
 
   refreshScheduledTxsList: function() {
-    lib_msg.displayMessage('Loading PushTx orchestrator status info...');
+    //lib_msg.displayMessage('Loading PushTx orchestrator status info...');
     lib_api.getOrchestratorStatus().then(orchestrStatus => {
       if(orchestrStatus) {
         const data = orchestrStatus['data']
@@ -44,7 +44,7 @@ const pushtxScript = {
             this.processedSchedTxs.add(tx['schTxid'])
           }
         }
-        lib_msg.cleanMessagesUi()
+        //lib_msg.cleanMessagesUi()
       }
     }).catch(e => {
       lib_errors.processError(e)
