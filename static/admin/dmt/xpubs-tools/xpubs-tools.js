@@ -3,6 +3,7 @@ const screenXpubsToolsScript = {
   explorerInfo: null,
   currentXpub: null,
   isReimport: false,
+  rescanStatusTimerId: null,
 
   initPage: function() {
     this.getExplorerInfo()
@@ -75,7 +76,7 @@ const screenXpubsToolsScript = {
   },
 
   importXpub: function() {
-    lib_msg.displayMessage('Processing xpub import...');
+    lib_msg.displayMessage('Processing xpub import. Please wait...');
 
     const jsonData = {
       'xpub': this.currentXpub,
@@ -95,29 +96,71 @@ const screenXpubsToolsScript = {
 
     return lib_api.postXpub(jsonData)
       .then(result => {
+        // Successful import
         this._searchXpub(this.currentXpub).then(() => {
           lib_msg.displayInfo('Import complete')
         })
       }).catch(e => {
-        lib_errors.processError(e)
+        // Check if import has timeout'd or if we have an error
+        if (e['status'] == 502 || e['status'] == 504) {
+          // Wait for import completion
+          this.checkRescanStatus(() => {
+            this._searchXpub(this.currentXpub).then(() => {
+              lib_msg.displayInfo('Import complete')
+            })
+          })
+        } else {
+          lib_errors.processError(e)
+        }
       })
   },
 
   rescanXpub: function() {
-    lib_msg.displayMessage('Processing xpub rescan...');
+    lib_msg.displayMessage('Processing xpub rescan. Please wait...');
     let startIdx = $('#rescan-start-idx').val()
     startIdx = (startIdx == null) ? 0 : parseInt(startIdx)
     let lookahead = $('#rescan-lookahead').val()
     lookahead = (lookahead == null) ? 100 : parseInt(lookahead)
     return lib_api.getXpubRescan(this.currentXpub, lookahead, startIdx)
-      .then(result => {
+      .then(() => {
+        // Successful rescan
         this.hideRescanForm()
         this._searchXpub(this.currentXpub).then(() => {
           lib_msg.displayInfo('Rescan complete')
         })
       }).catch(e => {
-        lib_errors.processError(e)
+        // Check if rescan has timeout'd or if we have an error
+        if (e['status'] == 502 || e['status'] == 504) {
+          // Wait for rescan completion
+          this.checkRescanStatus(() => {
+            this.hideRescanForm()
+            this._searchXpub(this.currentXpub).then(() => {
+              lib_msg.displayInfo('Rescan complete')
+            })
+          })
+        } else {
+          lib_errors.processError(e)
+        }
       })
+  },
+
+  checkRescanStatus: function(callback) {
+    this.rescanStatusTimerId = setTimeout(() => {
+      lib_api.getXpubRescanStatus(this.currentXpub)
+        .then(result => {
+          if (result['data']['import_in_progress']) {
+            lib_msg.displayMessage('Rescan in progress. Please wait...');
+            return this.checkRescanStatus(callback)
+          } else {
+            clearTimeout(this.rescanStatusTimerId)
+            return callback()
+          }
+        }).catch(e => {
+          lib_errors.processError(e)
+          lib_msg.displayMessage('Rescan in progress. Please wait...');
+          return this.checkRescanStatus(callback)
+        })
+      }, 10000)
   },
 
   setXpubDetails: function(xpubInfo) {
