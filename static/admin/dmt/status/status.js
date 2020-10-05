@@ -13,27 +13,26 @@ const statusScript = {
   },
 
   refreshApiStatus: function() {
-    lib_msg.displayMessage('Loading API status info...');
+    //lib_msg.displayMessage('Loading API status info...');
     return lib_api.getApiStatus().then(apiStatus => {
       if (apiStatus) {
         $('#tracker-status-ind').html('&#10003;')
         $('#tracker-status-ind').css('color', '#76d776')
         $('#tracker-uptime').text(apiStatus['uptime'])
         $('#tracker-chaintip').text(apiStatus['blocks'])
-        lib_msg.cleanMessagesUi()
+        //lib_msg.cleanMessagesUi()
       }
     }).catch(e => {
       $('#tracker-status-ind').text('X')
       $('#tracker-status-ind').css('color', '#f77c7c')
       $('#tracker-uptime').text('-')
       $('#tracker-chaintip').text('-')
-      lib_msg.displayErrors(lib_msg.extractJqxhrErrorMsg(e))
-      console.log(e)
+      lib_errors.processError(e)
     })
   },
 
   refreshPushTxStatus: function() {
-    lib_msg.displayMessage('Loading Tracker status info...');
+    //lib_msg.displayMessage('Loading Tracker status info...');
     lib_api.getPushtxStatus().then(pushTxStatus => {
       if (pushTxStatus) {
         const data = pushTxStatus['data']
@@ -47,7 +46,7 @@ const statusScript = {
         $('#node-network').text(network)
         $('#node-conn').text(data['bitcoind']['conn'])
         $('#node-relay-fee').text(data['bitcoind']['relayfee'])
-        lib_msg.cleanMessagesUi()
+        //lib_msg.cleanMessagesUi()
       }
     }).catch(e => {
       $('#node-status-ind').text('-')
@@ -58,8 +57,7 @@ const statusScript = {
       $('#node-network').text('-')
       $('#node-conn').text('-')
       $('#node-relay-fee').text('-')
-      lib_msg.displayErrors(lib_msg.extractJqxhrErrorMsg(e))
-      console.log(e)
+      lib_errors.processError(e)
     })
   },
 
