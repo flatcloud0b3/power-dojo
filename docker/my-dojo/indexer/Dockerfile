@@ -1,7 +1,7 @@
 FROM    rust:1.42.0-slim-buster
 
 ENV     INDEXER_HOME        /home/indexer
-ENV     INDEXER_VERSION     0.3.0
+ENV     INDEXER_VERSION     0.4.0
 ENV     INDEXER_URL         https://code.samourai.io/dojo/addrindexrs.git
 
 RUN     apt-get update && \
