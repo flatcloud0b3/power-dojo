@@ -453,6 +453,10 @@ button {
   color: #76d776;
 }
 
+#indexer-status {
+  padding-bottom: 12px;
+}
+
 /* PAGES - PAIRING */
 #qr-label,
 #qr-explorer-label {
