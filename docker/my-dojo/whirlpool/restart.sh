@@ -12,6 +12,7 @@ whirlpool_options=(
   --cli.torConfig.coordinator.onion=true
   --cli.torConfig.backend.enabled=false
   --cli.torConfig.backend.onion=false
+  --cli.mix.liquidityClient=false
 )
 
 if [ "$COMMON_BTC_NETWORK" == "testnet" ]; then

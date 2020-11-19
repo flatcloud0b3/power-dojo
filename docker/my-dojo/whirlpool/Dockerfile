@@ -60,10 +60,10 @@ RUN     set -ex && \
 
 # Install whirlpool-cli
 ENV     WHIRLPOOL_URL                 https://code.samourai.io/whirlpool/whirlpool-client-cli/uploads
-ENV     WHIRLPOOL_VERSION             0.10.8
-ENV     WHIRLPOOL_VERSION_HASH        7998ea5a9bb180451616809bc346b9ac
+ENV     WHIRLPOOL_VERSION             0.10.9
+ENV     WHIRLPOOL_VERSION_HASH        602666c59f95ce72f1466f72d9c853e3
 ENV     WHIRLPOOL_JAR                 "whirlpool-client-cli-$WHIRLPOOL_VERSION-run.jar"
-ENV     WHIRLPOOL_SHA256              62e17b6020d0821a98e99ebb773b46191770ec186ceaa3e616a428f5cafe9f49
+ENV     WHIRLPOOL_SHA256              9de3ceaff6e8cc0849bde58bc9e17b9c602352df8659adc67ab95b39cf046e4c
 
 RUN     set -ex && \
         cd "$WHIRLPOOL_DIR" && \
@@ -81,7 +81,7 @@ RUN     chown whirlpool:whirlpool /restart.sh && \
         chmod u+x /restart.sh && \
         chmod g+x /restart.sh
 
-# Expose HTTP API port 
+# Expose HTTP API port
 EXPOSE  8898
 
 # Switch to user whirlpool
