@@ -4,7 +4,8 @@ const lib_errors = {
   extractJqxhrErrorMsg: function(jqxhr) {
     let hasErrorMsg = ('responseJSON' in jqxhr) &&
       (jqxhr['responseJSON'] != null) &&
-      ('error' in jqxhr['responseJSON'])
+      ('error' in jqxhr['responseJSON']) &&
+      (typeof jqxhr['responseJSON']['error'] == 'string')
 
     return hasErrorMsg ? jqxhr['responseJSON']['error'] : jqxhr.statusText
   },
