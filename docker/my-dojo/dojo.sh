@@ -55,7 +55,7 @@ select_yaml_files() {
 # Docker up
 docker_up() {
   yamlFiles=$(select_yaml_files)
-  eval "docker-compose $yamlFiles up $1 -d"
+  eval "docker-compose $yamlFiles up $@ -d"
 }
 
 # Start
@@ -74,7 +74,7 @@ start() {
 # Stop
 stop() {
   echo "Preparing shutdown of Dojo. Please wait."
-    # Check if dojo is running (check the db container)
+  # Check if dojo is running (check the db container)
   isRunning=$(docker inspect --format="{{.State.Running}}" db 2> /dev/null)
   if [ $? -eq 1 ] || [ "$isRunning" == "false" ]; then
     echo "Dojo is already stopped."
@@ -165,7 +165,7 @@ install() {
   if [ $launchInstall -eq 0 ]; then
     pastInstallsfound=$(docker image ls | grep samouraiwallet/dojo-db | wc -l)
     if [ $pastInstallsfound -ne 0 ]; then
-      # Past installation found. Ask confirmation forreinstall
+      # Past installation found. Ask confirmation for reinstall
       echo -e "\nWarning: Found traces of a previous installation of Dojo on this machine."
       echo "A new installation requires to remove these elements first."
       if [ $auto -eq 0 ]; then
@@ -200,9 +200,16 @@ install() {
     init_config_files
     # Build and start Dojo
     docker_up --remove-orphans
-    # Display the logs
-    if [ $noLog -eq 1 ]; then
-      logs "" 0
+    buildResult=$?
+    if [ $buildResult -eq 0 ]; then
+      # Display the logs
+      if [ $noLog -eq 1 ]; then
+        logs "" 0
+      fi
+    else
+      # Return an error
+      echo -e "\nInstallation of Dojo failed. See the above error message."
+      exit $buildResult
     fi
   fi
 }
@@ -233,20 +240,8 @@ uninstall() {
   fi
 
   if [ $launchUninstall -eq 0 ]; then
-    docker-compose rm -f
-
     yamlFiles=$(select_yaml_files)
-    eval "docker-compose $yamlFiles down"
-
-    docker image rm -f samouraiwallet/dojo-db:"$DOJO_DB_VERSION_TAG"
-    docker image rm -f samouraiwallet/dojo-bitcoind:"$DOJO_BITCOIND_VERSION_TAG"
-    docker image rm -f samouraiwallet/dojo-explorer:"$DOJO_EXPLORER_VERSION_TAG"
-    docker image rm -f samouraiwallet/dojo-nodejs:"$DOJO_NODEJS_VERSION_TAG"
-    docker image rm -f samouraiwallet/dojo-nginx:"$DOJO_NGINX_VERSION_TAG"
-    docker image rm -f samouraiwallet/dojo-tor:"$DOJO_TOR_VERSION_TAG"
-    docker image rm -f samouraiwallet/dojo-indexer:"$DOJO_INDEXER_VERSION_TAG"
-    docker image rm -f samouraiwallet/dojo-whirlpool:"$DOJO_WHIRLPOOL_VERSION_TAG"
-
+    eval "docker-compose $yamlFiles down --rmi all"
     docker volume prune -f
     return 0
   else
@@ -260,13 +255,12 @@ del_images_for() {
   # $2: most recent version of the image (do not delete this one)
   docker image ls | grep "$1" | sed "s/ \+/,/g" | cut -d"," -f2 | while read -r version ; do
     if [ "$2" != "$version" ]; then
-      docker image rm "$1:$version"
+      docker image rm -f "$1:$version"
     fi
   done
 }
 
 clean() {
-  docker image prune
   del_images_for samouraiwallet/dojo-db "$DOJO_DB_VERSION_TAG"
   del_images_for samouraiwallet/dojo-bitcoind "$DOJO_BITCOIND_VERSION_TAG"
   del_images_for samouraiwallet/dojo-explorer "$DOJO_EXPLORER_VERSION_TAG"
@@ -275,6 +269,7 @@ clean() {
   del_images_for samouraiwallet/dojo-tor "$DOJO_TOR_VERSION_TAG"
   del_images_for samouraiwallet/dojo-indexer "$DOJO_INDEXER_VERSION_TAG"
   del_images_for samouraiwallet/dojo-whirlpool "$DOJO_WHIRLPOOL_VERSION_TAG"
+  docker image prune -f
 }
 
 # Upgrade
@@ -311,7 +306,16 @@ upgrade() {
   if [ $launchUpgrade -eq 0 ]; then
     # Select yaml files
     yamlFiles=$(select_yaml_files)
+    # Check if dojo is running (check the db container)
+    isRunning=$(docker inspect --format="{{.State.Running}}" db 2> /dev/null)
+    if [ $? -eq 1 ] || [ "$isRunning" == "false" ]; then
+      echo -e "\nChecked that Dojo isn't running."
+    else
+      echo " "
+      stop
+    fi
     # Update config files
+    echo -e "\nPreparing the upgrade of Dojo.\n"
     update_config_files
     # Cleanup
     cleanup
@@ -320,19 +324,26 @@ upgrade() {
     export BITCOIND_RPC_EXTERNAL_IP
     # Rebuild the images (with or without cache)
     if [ $noCache -eq 0 ]; then
-      eval "docker-compose $yamlFiles build --no-cache"
-    else
-      eval "docker-compose $yamlFiles build"
+      echo -e "\nDeleting Dojo containers and images."
+      eval "docker-compose $yamlFiles down --rmi all"
     fi
-    # Start Dojo
-    docker_up --remove-orphans
-    # Post start clean-up
-    post_start_cleanup
-    # Update the database
-    update_dojo_db
-    # Display the logs
-    if [ $noLog -eq 1 ]; then
-      logs "" 0
+    echo -e "\nStarting the upgrade of Dojo.\n"
+    docker_up --build --force-recreate --remove-orphans
+    buildResult=$?
+    if [ $buildResult -eq 0 ]; then
+      # Post start clean-up
+      clean
+      post_start_cleanup
+      # Update the database
+      update_dojo_db
+      # Display the logs
+      if [ $noLog -eq 1 ]; then
+        logs "" 0
+      fi
+    else
+      # Return an error
+      echo -e "\nUpgrade of Dojo failed. See the above error message."
+      exit $buildResult
     fi
   fi
 }
