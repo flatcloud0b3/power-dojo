@@ -265,7 +265,7 @@ td.table-value {
 /* PAGES - COMMONS */
 body.dmt {
   min-height: 100vh;
-  background-image: url("../icons/samourai-logo-loading.png");
+  background-image: url("../icons/samourai-logo.png");
   background-repeat: no-repeat;
   background-position: center;
 }
