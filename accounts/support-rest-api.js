@@ -120,31 +120,8 @@ class SupportRestApi {
    */
   _formatAddressInfoResult(info) {
     const res = info.toPojoExtended()
-    /*res._endpoints = []
-
-    if (info.tracked) {
-      res._endpoints.push({
-        task: 'Rescan this address from remote sources',
-        url: `/${keys.prefixes.support}/address/${info.address}/rescan`
-      })
-    }
-
-    if (info.xpub != null) {
-      res._endpoints.push({
-        task: 'Get information about the HD account that owns this address',
-        url: `/${keys.prefixes.support}/xpub/${info.xpub}/info`
-      })
-
-      res._endpoints.push({
-        task: 'Rescan the whole HD account that owns this address',
-        url: `/${keys.prefixes.support}/xpub/${info.xpub}/rescan`
-      })
-    }*/
-
     return JSON.stringify(res, null, 2)
   }
-
-
 
   /**
    * Rescan the blockchain for a given address
@@ -162,10 +139,6 @@ class SupportRestApi {
 
       const ret = {
         status: 'Rescan complete',
-        /*_endpoints: [{
-          task: 'Get updated information about this address',
-          url: `/${keys.prefixes.support}/address/${address}/info`
-        }]*/
       }
 
       await addrService.rescan(address)
@@ -224,12 +197,6 @@ class SupportRestApi {
    */
   _formatXpubInfoResult(info) {
     const res = info.toPojoExtended()
-
-    /*res._endpoints = [{
-      task: 'Rescan the whole HD account from remote sources',
-      url: `/${keys.prefixes.support}/xpub/${info.xpub}/rescan`
-    }]*/
-
     return JSON.stringify(res, null, 2)
   }
 
@@ -249,10 +216,6 @@ class SupportRestApi {
 
       const ret = {
         status: 'Rescan complete',
-        /*_endpoints: [{
-          task: 'Get updated information about this HD account',
-          url: `/${keys.prefixes.support}/xpub/${xpub}/info`
-        }]*/
       }
 
       const gapLimit = req.query.gap != null ? parseInt(req.query.gap) : 0
