@@ -534,6 +534,17 @@ button {
   display: inline-block;
 }
 
+#xpubs-deletion-actions span {
+  display: inline;
+}
+
+#xpubs-deletion-actions input {
+  width: 50px;
+  margin-left: 5px;
+  margin-right: 5px;
+  display: inline-block;
+}
+
 #xpubs-tool-details #xpub-value {
   overflow: hidden;
 }
