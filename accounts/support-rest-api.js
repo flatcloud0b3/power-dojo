@@ -70,6 +70,14 @@ class SupportRestApi {
     )
 
     this.httpServer.app.get(
+      `/${keys.prefixes.support}/xpub/:xpub/delete`,
+      authMgr.checkHasAdminProfile.bind(authMgr),
+      this.validateArgsGetXpubDelete.bind(this),
+      this.getXpubDelete.bind(this),
+      HttpServer.sendAuthError
+    )
+
+    this.httpServer.app.get(
       `/${keys.prefixes.support}/pairing/explorer`,
       authMgr.checkHasAdminProfile.bind(authMgr),
       this.getPairingExplorer.bind(this),
@@ -247,6 +255,36 @@ class SupportRestApi {
   }
 
   /**
+   * Delete all data related to a hd account
+   * @param {object} req - http request object
+   * @param {object} res - http response object
+   */
+  async getXpubDelete(req, res) {
+    try {
+      // Parse the entities passed as url params
+      const entities = apiHelper.parseEntities(req.params.xpub).xpubs
+      if (entities.length == 0)
+        return HttpServer.sendError(res, errors.xpub.INVALID)
+
+      const xpub = entities[0]
+
+      try {
+        await hdaService.deleteHdAccount(xpub)
+        HttpServer.sendOk(res)
+      } catch(e) {
+        HttpServer.sendError(res, e)
+      }
+
+    } catch(e) {
+      HttpServer.sendError(res, errors.generic.GEN)
+
+    } finally {
+      debugApi && Logger.info(`API : Completed GET /support/xpub/${req.params.xpub}/delete`)
+    }
+  }
+
+
+  /**
    * Get pairing info
    */
   async getPairing(req, res) {
@@ -324,6 +362,23 @@ class SupportRestApi {
     if (!(isValidXpub && isValidGap)) {
       HttpServer.sendError(res, errors.body.INVDATA)
       Logger.error(null, 'API : SupportRestApi.validateArgsGetXpubRescan() : Invalid arguments')
+    } else {
+      next()
+    }
+  }
+
+  /**
+   * Validate arguments related to GET xpub delete requests
+   * @param {object} req - http request object
+   * @param {object} res - http response object
+   * @param {function} next - next express middleware
+   */
+  validateArgsGetXpubDelete(req, res, next) {
+    const isValidXpub = validator.isAlphanumeric(req.params.xpub)
+
+    if (!isValidXpub) {
+      HttpServer.sendError(res, errors.body.INVDATA)
+      Logger.error(null, `API : SupportRestApi.validateArgsGetXpubDelete() : Invalid xpub ${req.params.xpub}`)
     } else {
       next()
     }
