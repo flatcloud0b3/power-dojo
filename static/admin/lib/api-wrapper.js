@@ -111,6 +111,15 @@ const lib_api = {
   },
 
   /**
+   * Deletes a xpub
+   */
+  getXpubDelete: function(xpub) {
+    let prefix = conf['prefixes']['support']
+    let uri = this.baseUri + '/' + prefix + '/xpub/' + xpub + '/delete'
+    return this.sendGetUriEncoded(uri, {})
+  },
+
+  /**
    * Gets the status of a xpub rescan
    */
   getXpubRescanStatus: function(xpub) {

@@ -11,8 +11,11 @@ const screenXpubsToolsScript = {
     $('#btn-xpub-search-go').click(() => {this.searchXpub()})
     $('#btn-xpub-details-reset').click(() => {this.showSearchForm()})
     $('#btn-xpub-details-rescan').click(() => {this.showRescanForm()})
+    $('#btn-xpub-details-delete').click(() => {this.showDeletionForm()})
     $('#btn-xpub-rescan-go').click(() => {this.rescanXpub()})
     $('#btn-xpub-rescan-cancel').click(() => {this.hideRescanForm()})
+    $('#btn-xpub-delete-go').click(() => {this.deleteXpub()})
+    $('#btn-xpub-delete-cancel').click(() => {this.hideDeletionForm()})
     $('#btn-xpub-import-go').click(() => {this.importXpub()})
     $('#btn-xpub-details-retype').click(() => {this.showImportForm(true)})
     $('#btn-xpub-import-cancel').click(() => {this.hideImportForm(this.isReimport)})
@@ -25,6 +28,7 @@ const screenXpubsToolsScript = {
 
   preparePage: function() {
     this.hideRescanForm()
+    this.hideDeletionForm()
     this.showSearchForm()
     $("#xpub").focus()
   },
@@ -126,6 +130,18 @@ const screenXpubsToolsScript = {
     } catch(e) {
       lib_errors.processError(e)
     }
+  },
+
+  deleteXpub: function() {
+    lib_msg.displayMessage('Deleting a xpub. Please wait...')
+    return lib_api.getXpubDelete(this.currentXpub)
+      .then(result => {
+        this.currentXpub = null
+        this.preparePage()
+        lib_msg.displayInfo('Xpub successfully deleted')
+      }).catch(e => {
+        lib_errors.processError(e)
+      })
   },
 
   checkRescanStatus: function(callback) {
@@ -278,6 +294,17 @@ const screenXpubsToolsScript = {
 
   hideRescanForm: function() {
     $('#xpubs-rescans-actions').hide()
+    $('#xpubs-tool-actions').show()
+  },
+
+  showDeletionForm: function() {
+    $('#xpubs-tool-actions').hide()
+    $('#xpubs-deletion-actions').show()
+    lib_msg.cleanMessagesUi()
+  },
+
+  hideDeletionForm: function() {
+    $('#xpubs-deletion-actions').hide()
     $('#xpubs-tool-actions').show()
   },
 
