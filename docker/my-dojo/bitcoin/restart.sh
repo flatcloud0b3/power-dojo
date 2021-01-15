@@ -32,7 +32,7 @@ bitcoind_options=(
 if [ "$BITCOIND_LISTEN_MODE" == "on" ]; then
   bitcoind_options+=(-listen=1)
   bitcoind_options+=(-bind=172.28.1.5)
-  bitcoind_options+=(-externalip=$(cat /var/lib/tor/hsv2bitcoind/hostname))
+  bitcoind_options+=(-externalip=$(cat /var/lib/tor/hsv3bitcoind/hostname))
 fi
 
 if [ "$BITCOIND_RPC_EXTERNAL" == "on" ]; then
