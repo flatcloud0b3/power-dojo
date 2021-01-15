@@ -85,7 +85,7 @@ stop() {
     # Renewal of bitcoind onion address
     if [ "$BITCOIND_LISTEN_MODE" == "on" ]; then
       if [ "$BITCOIND_EPHEMERAL_HS" = "on" ]; then
-        $( docker exec -it tor rm -rf /var/lib/tor/hsv2bitcoind ) &> /dev/null
+        $( docker exec -it tor rm -rf /var/lib/tor/hsv3bitcoind ) &> /dev/null
       fi
     fi
     # Stop the bitcoin daemon
@@ -374,8 +374,8 @@ onion() {
 
   if [ "$BITCOIND_INSTALL" == "on" ]; then
     if [ "$BITCOIND_LISTEN_MODE" == "on" ]; then
-      V2_ADDR_BTCD=$( docker exec -it tor cat /var/lib/tor/hsv2bitcoind/hostname )
-      echo "Your local bitcoind (do not share) = $V2_ADDR_BTCD"
+      V3_ADDR_BTCD=$( docker exec -it tor cat /var/lib/tor/hsv3bitcoind/hostname )
+      echo "Your local bitcoind (do not share) = $V3_ADDR_BTCD"
       echo " "
     fi
   fi
