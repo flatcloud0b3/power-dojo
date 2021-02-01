@@ -211,6 +211,8 @@ install() {
       echo -e "\nInstallation of Dojo failed. See the above error message."
       exit $buildResult
     fi
+  else
+    exit 2
   fi
 }
 
@@ -345,6 +347,8 @@ upgrade() {
       echo -e "\nUpgrade of Dojo failed. See the above error message."
       exit $buildResult
     fi
+  else
+    exit 2
   fi
 }
 
