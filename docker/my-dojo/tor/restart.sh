@@ -31,6 +31,11 @@ if [ "$BITCOIND_INSTALL" == "on" ]; then
 fi
 
 if [ "$EXPLORER_INSTALL" == "on" ]; then
+  tor_options+=(--HiddenServiceDir /var/lib/tor/hsv2explorer)
+  tor_options+=(--HiddenServiceVersion 2)
+  tor_options+=(--HiddenServicePort "80 172.29.1.3:9080")
+  tor_options+=(--HiddenServiceDirGroupReadable 1)
+
   tor_options+=(--HiddenServiceDir /var/lib/tor/hsv3explorer)
   tor_options+=(--HiddenServiceVersion 3)
   tor_options+=(--HiddenServicePort "80 172.29.1.3:9080")
@@ -38,6 +43,11 @@ if [ "$EXPLORER_INSTALL" == "on" ]; then
 fi
 
 if [ "$WHIRLPOOL_INSTALL" == "on" ]; then
+  tor_options+=(--HiddenServiceDir /var/lib/tor/hsv2whirlpool)
+  tor_options+=(--HiddenServiceVersion 2)
+  tor_options+=(--HiddenServicePort "80 172.29.1.3:8898")
+  tor_options+=(--HiddenServiceDirGroupReadable 1)
+
   tor_options+=(--HiddenServiceDir /var/lib/tor/hsv3whirlpool)
   tor_options+=(--HiddenServiceVersion 3)
   tor_options+=(--HiddenServicePort "80 172.29.1.3:8898")
