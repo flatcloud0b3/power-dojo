@@ -212,7 +212,7 @@ install() {
       exit $buildResult
     fi
   else
-    exit 2
+    exit 1
   fi
 }
 
@@ -348,7 +348,7 @@ upgrade() {
       exit $buildResult
     fi
   else
-    exit 2
+    exit 1
   fi
 }
 
