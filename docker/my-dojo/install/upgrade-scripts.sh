@@ -185,13 +185,6 @@ cleanup() {
 # Post start clean-up
 post_start_cleanup() {
   #################
-  # Clean-up v1.9.0
-  #################
-
-  # Remove /var/lib/tor/hsv2bitcoind from tor volume
-  docker exec -it tor rm -rf /var/lib/tor/hsv2bitcoind
-
-  #################
   # Clean-up v1.6.0
   #################
 
