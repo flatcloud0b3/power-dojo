@@ -1,7 +1,7 @@
 FROM    debian:buster
 
 ENV     TOR_HOME            /var/lib/tor
-ENV     TOR_URL             https://archive.torproject.org/tor-package-archive
+ENV     TOR_URL             https://dist.torproject.org
 ENV     TOR_MIRROR_URL      https://tor.eff.org/dist
 ENV     TOR_VERSION         0.4.4.6
 ENV     TOR_GPG_KS_URI      hkp://keyserver.ubuntu.com:80
