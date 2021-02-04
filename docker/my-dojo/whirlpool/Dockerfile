@@ -19,7 +19,7 @@ RUN     set -ex && \
         mkdir -p "$WHIRLPOOL_DIR"
 
 # Install Tor
-ENV     WHIRLPOOL_TOR_URL             https://archive.torproject.org/tor-package-archive
+ENV     WHIRLPOOL_TOR_URL             https://dist.torproject.org
 ENV     WHIRLPOOL_TOR_MIRROR_URL      https://tor.eff.org/dist
 ENV     WHIRLPOOL_TOR_VERSION         0.4.4.6
 ENV     WHIRLPOOL_TOR_GPG_KS_URI      hkp://keyserver.ubuntu.com:80
