@@ -130,6 +130,7 @@ Upgrade to addrindexrs v0.4.0
 - [#mr192](https://code.samourai.io/dojo/samourai-dojo/-/merge_requests/192) return exit code 1 instead of 2 for aborted install & upgrade
 - [#mr193](https://code.samourai.io/dojo/samourai-dojo/-/merge_requests/193) reactivate tor v2 hidden service for bitcoind
 - [#mr194](https://code.samourai.io/dojo/samourai-dojo/-/merge_requests/194) upgrade tor to v0.4.4.7
+- [#mr195](https://code.samourai.io/dojo/samourai-dojo/-/merge_requests/195) bump block height defining ibd mode
 - [9fe22a35](https://code.samourai.io/dojo/samourai-dojo/-/commit/9fe22a356625e0c1aeb18691d617af9118990c84) update .gitignore
 
 
