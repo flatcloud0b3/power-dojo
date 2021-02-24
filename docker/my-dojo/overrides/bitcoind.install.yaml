@@ -6,6 +6,10 @@ services:
     container_name: bitcoind
     build:
       context: ./bitcoin
+      args:
+        BITCOIND_LINUX_UID: ${BITCOIND_LINUX_UID}
+        BITCOIND_LINUX_GID: ${BITCOIND_LINUX_GID}
+        TOR_LINUX_GID: ${TOR_LINUX_GID}
     env_file:
       - ./.env
       - ./conf/docker-common.conf

@@ -4,13 +4,16 @@ ENV     INDEXER_HOME        /home/indexer
 ENV     INDEXER_VERSION     0.4.0
 ENV     INDEXER_URL         https://code.samourai.io/dojo/addrindexrs.git
 
+ARG     INDEXER_LINUX_GID
+ARG     INDEXER_LINUX_UID
+
 RUN     apt-get update && \
         apt-get install -y clang cmake git && \
         apt-get install -y libsnappy-dev
 
 # Create group and user indexer
-RUN     addgroup --system -gid 1109 indexer && \
-        adduser --system --ingroup indexer -uid 1106 indexer
+RUN     addgroup --system -gid ${INDEXER_LINUX_GID} indexer && \
+        adduser --system --ingroup indexer -uid ${INDEXER_LINUX_UID} indexer
 
 # Create data directory
 RUN     mkdir "$INDEXER_HOME/addrindexrs" && \

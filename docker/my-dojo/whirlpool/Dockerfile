@@ -3,6 +3,8 @@ FROM    debian:buster
 ENV     WHIRLPOOL_HOME                /home/whirlpool
 ENV     WHIRLPOOL_DIR                 /usr/local/whirlpool-cli
 
+ARG     WHIRLPOOL_LINUX_UID
+ARG     WHIRLPOOL_LINUX_GID
 
 # Install prerequisites
 # Create group & user whirlpool
@@ -11,8 +13,8 @@ ENV     WHIRLPOOL_DIR                 /usr/local/whirlpool-cli
 RUN     set -ex && \
         apt-get update && \
         apt-get install -y libevent-dev zlib1g-dev libssl-dev gcc make automake ca-certificates autoconf musl-dev coreutils gpg wget default-jdk && \
-        addgroup --system -gid 1113 whirlpool && \
-        adduser --system --ingroup whirlpool -uid 1110 whirlpool && \
+        addgroup --system -gid ${WHIRLPOOL_LINUX_GID} whirlpool && \
+        adduser --system --ingroup whirlpool -uid ${WHIRLPOOL_LINUX_UID} whirlpool && \
         mkdir -p "$WHIRLPOOL_HOME/.whirlpool-cli" && \
         chown -Rv whirlpool:whirlpool "$WHIRLPOOL_HOME" && \
         chmod -R 750 "$WHIRLPOOL_HOME" && \

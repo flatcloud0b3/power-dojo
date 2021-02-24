@@ -6,6 +6,9 @@ services:
     container_name: whirlpool
     build:
       context: ./whirlpool
+      args:
+        WHIRLPOOL_LINUX_UID: ${WHIRLPOOL_LINUX_UID}
+        WHIRLPOOL_LINUX_GID: ${WHIRLPOOL_LINUX_GID}
     env_file:
       - ./.env
       - ./conf/docker-common.conf

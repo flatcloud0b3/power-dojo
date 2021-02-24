@@ -1,9 +1,11 @@
 FROM    node:12-buster
 
-ENV     APP_DIR     /home/node/app
+ENV     APP_DIR                 /home/node/app
+ARG     TOR_LINUX_GID
+
 
 # Add node user to tor group
-RUN     addgroup --system -gid 1107 tor && \
+RUN     addgroup --system -gid ${TOR_LINUX_GID} tor && \
         usermod -a -G tor node
 
 # Install forever
@@ -11,7 +13,7 @@ RUN     npm install -g forever
 
 # Create app directory
 RUN     mkdir "$APP_DIR" && \
-        chown -R node:node "$APP_DIR" 
+        chown -R node:node "$APP_DIR"
 
 # Copy app source files into APP_DIR
 COPY    . "$APP_DIR"

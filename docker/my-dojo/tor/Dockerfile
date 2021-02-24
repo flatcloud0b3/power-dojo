@@ -17,6 +17,9 @@ ENV     GOLANG_SHA256       50fe8e13592f8cf22304b9c4adfc11849a2c3d281b1d7e09c924
 ENV     OBFS4_URL           https://github.com/Yawning/obfs4.git
 ENV     OBFS4_VERSION       0.0.11
 
+ARG     TOR_LINUX_UID
+ARG     TOR_LINUX_GID
+
 
 # Install Tor
 RUN     set -ex && \
@@ -68,8 +71,8 @@ RUN     cd /usr/local/src && \
         rm -rf obfs4proxy
 
 # Create group & user tor
-RUN     addgroup --system -gid 1107 tor && \
-        adduser --system --ingroup tor -uid 1104 tor
+RUN     addgroup --system -gid ${TOR_LINUX_GID} tor && \
+        adduser --system --ingroup tor -uid ${TOR_LINUX_UID} tor
 
 # Create /etc/tor directory
 RUN     mkdir -p /etc/tor/ && \
