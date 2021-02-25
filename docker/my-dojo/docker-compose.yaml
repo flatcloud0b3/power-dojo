@@ -22,7 +22,7 @@ services:
         max-file: "10"
     networks:
       dojonet:
-        ipv4_address: 172.28.1.1
+        ipv4_address: ${NET_DOJO_MYSQL_IPV4}
 
   node:
     image: "samouraiwallet/dojo-nodejs:${DOJO_NODEJS_VERSION_TAG}"
@@ -57,7 +57,7 @@ services:
       - db
     networks:
       dojonet:
-        ipv4_address: 172.28.1.2
+        ipv4_address: ${NET_DOJO_NODE_IPV4}
 
   nginx:
     image: "samouraiwallet/dojo-nginx:${DOJO_NGINX_VERSION_TAG}"
@@ -81,11 +81,11 @@ services:
       - node
     networks:
       whirlnet:
-        ipv4_address: 172.30.1.3
+        ipv4_address: ${NET_WHIRL_NGINX_IPV4}
       dmznet:
-        ipv4_address: 172.29.1.3
+        ipv4_address: ${NET_DMZ_NGINX_IPV4}
       dojonet:
-        ipv4_address: 172.28.1.3
+        ipv4_address: ${NET_DOJO_NGINX_IPV4}
 
   tor:
     image: "samouraiwallet/dojo-tor:${DOJO_TOR_VERSION_TAG}"
@@ -112,9 +112,9 @@ services:
         max-file: "10"
     networks:
       dmznet:
-        ipv4_address: 172.29.1.4
+        ipv4_address: ${NET_DMZ_TOR_IPV4}
       dojonet:
-        ipv4_address: 172.28.1.4
+        ipv4_address: ${NET_DOJO_TOR_IPV4}
 
 networks:
   dojonet:
