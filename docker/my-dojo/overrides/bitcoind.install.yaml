@@ -34,7 +34,7 @@ services:
       - tor
     networks:
       dojonet:
-        ipv4_address: 172.28.1.5
+        ipv4_address: ${NET_DOJO_BITCOIND_IPV4}
 
   node:
     depends_on:
