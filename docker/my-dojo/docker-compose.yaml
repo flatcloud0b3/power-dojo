@@ -30,6 +30,8 @@ services:
     build:
       context: ./../..
       dockerfile: ./docker/my-dojo/node/Dockerfile
+      args:
+        TOR_LINUX_GID: ${TOR_LINUX_GID}
     env_file:
       - ./.env
       - ./conf/docker-common.conf
@@ -90,6 +92,9 @@ services:
     container_name: tor
     build:
       context: ./tor
+      args:
+        TOR_LINUX_UID: ${TOR_LINUX_UID}
+        TOR_LINUX_GID: ${TOR_LINUX_GID}
     env_file:
       - ./.env
       - ./conf/docker-bitcoind.conf

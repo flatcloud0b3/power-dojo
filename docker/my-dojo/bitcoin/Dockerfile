@@ -12,6 +12,11 @@ ENV     BITCOIN_ASC_URL     https://bitcoincore.org/bin/bitcoin-core-0.21.0/SHA2
 ENV     BITCOIN_PGP_KS_URI  hkp://keyserver.ubuntu.com:80
 ENV     BITCOIN_PGP_KEY     01EA5486DE18A882D4C2684590C8019E36C2E964
 
+ARG     BITCOIND_LINUX_UID
+ARG     BITCOIND_LINUX_GID
+ARG     TOR_LINUX_GID
+
+
 RUN     set -ex && \
         apt-get update && \
         apt-get install -qq --no-install-recommends ca-certificates dirmngr gosu gpg gpg-agent wget && \
@@ -30,9 +35,9 @@ RUN     set -ex && \
 
 # Create groups bitcoin & tor
 # Create user bitcoin and add it to groups
-RUN     addgroup --system -gid 1108 bitcoin && \
-        addgroup --system -gid 1107 tor && \
-        adduser --system --ingroup bitcoin -uid 1105 bitcoin && \
+RUN     addgroup --system -gid ${BITCOIND_LINUX_GID} bitcoin && \
+        addgroup --system -gid ${TOR_LINUX_GID} tor && \
+        adduser --system --ingroup bitcoin -uid ${BITCOIND_LINUX_UID} bitcoin && \
         usermod -a -G tor bitcoin
 
 # Create data directory

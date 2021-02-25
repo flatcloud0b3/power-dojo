@@ -6,6 +6,9 @@ services:
     container_name: indexer
     build:
       context: ./indexer
+      args:
+        INDEXER_LINUX_UID: ${INDEXER_LINUX_UID}
+        INDEXER_LINUX_GID: ${INDEXER_LINUX_GID}
     env_file:
       - ./.env
       - ./conf/docker-common.conf
