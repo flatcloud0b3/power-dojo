@@ -66,7 +66,7 @@ module.exports = {
       // Password
       pass: process.env.MYSQL_PASSWORD,
       // IP address
-      host: 'db',
+      host: process.env.NET_DOJO_MYSQL_IPV4,
       // TCP port
       port: 3306,
       // Db name
