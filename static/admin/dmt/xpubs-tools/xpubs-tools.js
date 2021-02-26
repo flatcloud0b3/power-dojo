@@ -27,6 +27,10 @@ const screenXpubsToolsScript = {
   },
 
   preparePage: function() {
+    // Disable custom lookahead if data source is a third party explorer
+    const disableLookahead = sessionStorage.getItem('indexerType') == 'third_party_explorer'
+    $('#rescan-lookahead').prop('disabled', disableLookahead)
+
     this.hideRescanForm()
     this.hideDeletionForm()
     this.showSearchForm()
