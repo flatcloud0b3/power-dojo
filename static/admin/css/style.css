@@ -551,6 +551,17 @@ button {
   display: inline-block;
 }
 
+#xpubs-export-actions span {
+  display: inline;
+}
+
+#xpubs-export-actions select {
+  width: 240px;
+  margin-left: 5px;
+  margin-right: 5px;
+  display: inline-block;
+}
+
 #xpubs-tool-details #xpub-value {
   overflow: hidden;
 }

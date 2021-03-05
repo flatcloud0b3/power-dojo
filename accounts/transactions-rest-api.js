@@ -83,8 +83,15 @@ class TransactionsRestApi {
       const active = apiHelper.parseEntities(req.query.active)
       const page = req.query.page != null ? parseInt(req.query.page) : 0
       const count = req.query.count != null ? parseInt(req.query.count) : keys.multiaddr.transactions
+      const excludeNullXfer = req.query.excludeNullXfer != null
 
       const result = await walletService.getWalletTransactions(active, page, count)
+      if (excludeNullXfer) {
+        result.txs = result.txs.filter(tx => {
+          return tx['result'] != 0
+        })
+      }
+
       const ret = JSON.stringify(result, null, 2)
       HttpServer.sendRawData(res, ret)
 
@@ -141,7 +148,11 @@ class TransactionsRestApi {
       !req.query.count
       || validator.isInt(req.query.count)
 
-    if (!(isValidPage && isValidCount)) {
+    const isValidExcludeNull =
+      !req.query.excludeNullXfer
+      || validator.isAlphanumeric(req.query.excludeNullXfer)
+
+    if (!(isValidPage && isValidCount && isValidExcludeNull)) {
       HttpServer.sendError(res, errors.body.INVDATA)
       Logger.error(
         req.query,
