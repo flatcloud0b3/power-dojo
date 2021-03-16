@@ -9,6 +9,7 @@ const LRU = require('lru-cache')
 const bitcoin = require('bitcoinjs-lib')
 const util = require('../lib/util')
 const db = require('../lib/db/mysql-db-wrapper')
+const addrHelper = require('../lib/bitcoin/addresses-helper')
 const network = require('../lib/bitcoin/network')
 const keys = require('../keys')[network.key]
 const activeNet = network.network
@@ -69,11 +70,7 @@ class TransactionsBundle {
     // Process transactions by slices of 5000 transactions
     const MAX_NB_TXS = 5000
     const lists = util.splitList(this.transactions, MAX_NB_TXS)
-
-    const results = await util.seriesCall(lists, list => {
-      return this._prefilterTransactions(list)
-    })
-
+    const results = await util.seriesCall(lists, txs => this._prefilterTransactions(txs))
     return _.flatten(results)
   }
 
@@ -110,15 +107,15 @@ class TransactionsBundle {
       const txid = tx.getId()
 
       indexedTxs[txid] = i
-      
+
       // If we already checked this tx
       if (TransactionsBundle.cache.has(txid))
-        continue 
+        continue
 
       for (const j in tx.outs) {
         try {
           const script = tx.outs[j].script
-          const address = bitcoin.address.fromOutputScript(script, activeNet)
+          const address = addrHelper.outputScript2Address(script)
           outputs.push(address)
           // Index the output
           if (!indexedOutputs[address])
@@ -174,7 +171,9 @@ class TransactionsBundle {
     }
 
     // Prefilter
-    const inRes = await db.getOutputSpends(inputs)
+    const lists = util.splitList(inputs, 1000)
+    const results = await util.parallelCall(lists, list => db.getOutputSpends(list))
+    const inRes = _.flatten(results)
 
     for (const i in inRes) {
       const key = inRes[i].txnTxid + '-' + inRes[i].outIndex

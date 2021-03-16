@@ -37,7 +37,7 @@ class Block extends TransactionsBundle {
 
     let block
     const txsForBroadcast = []
-    
+
     try {
       block = bitcoin.Block.fromHex(this.hex)
       this.transactions = block.transactions
@@ -46,10 +46,10 @@ class Block extends TransactionsBundle {
       Logger.error(null, this.header)
       return Promise.reject(e)
     }
-    
+
     const t0 = Date.now()
     let ntx = 0
-    
+
     // Filter transactions
     const filteredTxs = await this.prefilterTransactions()
 
@@ -78,9 +78,9 @@ class Block extends TransactionsBundle {
 
     // Confirms the transactions
     const txids = this.transactions.map(t => t.getId())
-    ntx = txids.length    
+    ntx = txids.length
     const txidLists = util.splitList(txids, 100)
-    await util.seriesCall(txidLists, list => db.confirmTransactions(list, blockId))
+    await util.parallelCall(txidLists, list => db.confirmTransactions(list, blockId))
 
     // Logs and result returned
     const dt = ((Date.now()-t0)/1000).toFixed(1)
