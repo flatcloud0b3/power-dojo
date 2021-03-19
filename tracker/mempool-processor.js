@@ -69,7 +69,7 @@ class MempoolProcessor extends AbstractProcessor {
 
   /**
    * Stop processing
-   */ 
+   */
   async stop() {
     clearInterval(this.checkUnconfirmedId)
     clearInterval(this.processMempoolId)
@@ -218,11 +218,11 @@ class MempoolProcessor extends AbstractProcessor {
     const unconfirmedTxs = await db.getUnconfirmedTransactions()
 
     if (unconfirmedTxs.length > 0) {
-      await util.seriesCall(unconfirmedTxs, tx => {
+      await util.parallelCall(unconfirmedTxs, tx => {
         try {
           return this.client.getrawtransaction(tx.txnTxid, true)
             .then(async rtx => {
-              if (!rtx.blockhash) return null              
+              if (!rtx.blockhash) return null
               // Transaction is confirmed
               const block = await db.getBlockByHash(rtx.blockhash)
               if (block && block.blockID) {
