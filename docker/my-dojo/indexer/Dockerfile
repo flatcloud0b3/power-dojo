@@ -1,7 +1,7 @@
 FROM    rust:1.42.0-slim-buster
 
 ENV     INDEXER_HOME        /home/indexer
-ENV     INDEXER_VERSION     0.4.0
+ENV     INDEXER_VERSION     0.5.0
 ENV     INDEXER_URL         https://code.samourai.io/dojo/addrindexrs.git
 
 ARG     INDEXER_LINUX_GID
@@ -42,5 +42,6 @@ RUN     cd "$INDEXER_HOME/addrindexrs" && \
         cargo install --locked --path .
 
 EXPOSE  50001
+EXPOSE  8080
 
 STOPSIGNAL SIGINT
