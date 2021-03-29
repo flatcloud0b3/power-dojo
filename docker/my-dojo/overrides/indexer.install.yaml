@@ -18,6 +18,7 @@ services:
     command: "/wait-for-it.sh tor:9050 --timeout=360 --strict -- /restart.sh"
     expose:
       - "50001"
+      - "8080"
     volumes:
       - data-indexer:/home/indexer
     logging:
