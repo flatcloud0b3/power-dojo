@@ -75,8 +75,7 @@ class Status {
     this.status.push.count = this.stats.count
 
     try {
-      await this._refreshNetworkInfo()
-      await this._refreshBlockchainInfo()
+      await Promise.all([this._refreshNetworkInfo(), this._refreshBlockchainInfo()])
     } catch (e) {
       Logger.error(e, 'PushTx : Status.getCurrent() : Error')
     } finally {
