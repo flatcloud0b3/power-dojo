@@ -257,11 +257,10 @@ class MempoolProcessor extends AbstractProcessor {
    */
   async _refreshActiveStatus() {
     // Get highest header in the blockchain
-    const info = await this.client.getblockchaininfo()
+    // Get highest block processed by the tracker
+    const [highestBlock, info] = await Promise.all([db.getHighestBlock(), this.client.getblockchaininfo()])
     const highestHeader = info.headers
 
-    // Get highest block processed by the tracker
-    const highestBlock = await db.getHighestBlock()
     if (highestBlock == null || highestBlock.blockHeight == 0) {
       this.isActive = false
       return
