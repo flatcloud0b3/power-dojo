@@ -75,9 +75,11 @@ class MempoolProcessor extends AbstractProcessor {
     clearInterval(this.processMempoolId)
     //clearInterval(this.displayStatsId)
 
-    resolve(this.txSock.disconnect(keys.bitcoind.zmqTx).close())
-    resolve(this.pushTxSock.disconnect(keys.ports.notifpushtx).close())
-    resolve(this.orchestratorSock.disconnect(keys.ports.orchestrator).close())
+    this.txSock.disconnect(keys.bitcoind.zmqTx).close()
+    this.pushTxSock.disconnect(keys.ports.notifpushtx).close()
+    this.orchestratorSock.disconnect(keys.ports.orchestrator).close()
+
+    return Promise.resolve();
   }
 
   /**
