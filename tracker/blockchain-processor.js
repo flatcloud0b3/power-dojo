@@ -161,17 +161,12 @@ class BlockchainProcessor extends AbstractProcessor {
 
       Logger.info(`Tracker : Sync ${blockRange.length} blocks`)
 
-      // Process the blocks
-      return util.seriesCall(blockRange, async height => {
-        try {
-          const hash = await this.client.getblockhash(height)
-          const header = await this.client.getblockheader(hash)
-          return this.processBlock(header)
-        } catch(e) {
-          Logger.error(e, 'Tracker : BlockchainProcessor.catchupNormalMode()')
-          process.exit()
-        }
-      }, 'Tracker syncing', true)
+      try {
+        return this.processBlockRange(blockRange)
+      } catch(e) {
+        Logger.error(e, 'Tracker : BlockchainProcessor.catchupNormalMode()')
+        process.exit()
+      }
 
     } catch(e) {
       Logger.error(e, 'Tracker : BlockchainProcessor.catchupNormalMode()')
@@ -259,9 +254,7 @@ class BlockchainProcessor extends AbstractProcessor {
       await this.rewind(knownHeight)
 
       // Process the blocks
-      return await util.seriesCall(headers, header => {
-        return this.processBlock(header)
-      })
+      return await this.processBlocks(headers)
 
     } catch(e) {
       Logger.error(e, 'Tracker : BlockchainProcessor.onBlockHash()')
@@ -340,44 +333,94 @@ class BlockchainProcessor extends AbstractProcessor {
     Logger.info(`Blocks Rescan : starting a rescan for ${blockRange.length} blocks`)
 
     // Process the blocks
-    return util.seriesCall(blockRange, async height => {
-      try {
-        Logger.info(`Tracker : Rescanning block ${height}`)
-        const hash = await this.client.getblockhash(height)
-        const header = await this.client.getblockheader(hash)
-        return this.processBlock(header)
-      } catch(e) {
-        Logger.error(e, 'Tracker : BlockchainProcessor.rescan()')
-        throw e
-      }
-    }, 'Tracker rescan', true)
+    try {
+      return this.processBlockRange(blockRange)
+    } catch(e) {
+      Logger.error(e, 'Tracker : BlockchainProcessor.rescan()')
+      throw e
+    }
   }
 
   /**
-   * Process a block
-   * @param {object} header - block header
-   * @returns {Promise}
+   * Process a series of blocks
+   * @param {object[]} headers - array of block headers
    */
-  async processBlock(header) {
-    try {
-      // Get raw block hex string from bitcoind
-      const hex = await this.client.getblock(header.hash, false)
+  async processBlocks(headers) {
+    const MAX_NB_BLOCKS = 5
+    const chunks = util.splitList(headers, MAX_NB_BLOCKS)
 
-      const block = new Block(hex, header)
+    return util.seriesCall(chunks, async chunk => {
+      const t0 = Date.now()
+      const sBlockRange = `${chunk[0].height}-${chunk[chunk.length-1].height}`
+      Logger.info(`Tracker : Beginning to process blocks ${sBlockRange}.`)
 
-      const txsForBroadcast = await block.checkBlock()
+      const txsForBroadcast = new Map()
+      // Initialize the blocks and process the transaction outputs
+      console.time('outputs')
+      const blocks = await util.parallelCall(chunk, async header => {
+        // Get raw block hex string from bitcoind
+        const hex = await this.client.getblock(header.hash, false)
+        const block = new Block(hex, header)
+        // Process the transaction outputs
+        const txs = await block.processOutputs()
+        txsForBroadcast.set(block.header.hash, txs)
+        return block
+      })
+      console.timeEnd('outputs')
+      // Process the transaction inputs
+      console.time('inputs')
+      await util.parallelCall(blocks, async block => {
+        const txs = await block.processInputs()
+        txsForBroadcast.set(
+          block.header.hash,
+          txs.concat(txsForBroadcast.get(block.header.hash))
+        )
+      })
+      console.timeEnd('inputs')
+      // Sort the blocks by ascending height
+      blocks.sort((a,b) => a.header.height - b.header.height)
+      // Register the block and confirm the transactions
+      console.time('confirm')
+      await util.seriesCall(blocks, async block => {
+        const blockId = await block.registerBlock()
+        const aTxsForBroadcast = [...new Set(txsForBroadcast.get(block.header.hash))]
+        await block.confirmTransactions(aTxsForBroadcast, blockId)
+      })
+      console.timeEnd('confirm')
 
-      // Send notifications
-      for (let tx of txsForBroadcast)
-        this.notifyTx(tx)
+      console.time('notify')
+      await util.parallelCall(blocks, async block => {
+        const aTxsForBroadcast = [...new Set(txsForBroadcast.get(block.header.hash))]
+        for (let tx of aTxsForBroadcast)
+          this.notifyTx(tx)
+        this.notifyBlock(block.header)
+      })
+      console.timeEnd('notify')
 
-      this.notifyBlock(header)
+      const dt = ((Date.now()-t0)/1000).toFixed(1)
+      const per = ((Date.now()-t0)/MAX_NB_BLOCKS).toFixed(0)
+      Logger.info(`Tracker :  Finished processing blocks ${sBlockRange}, ${dt}s, ${per}ms/block`)
+    })
+  }
 
-    } catch(e) {
-      // The show must go on.
-      // TODO: further notification that this block did not check out
-      Logger.error(e, 'Tracker : BlockchainProcessor.processBlock()')
-    }
+  /**
+   * Process a range of blocks
+   * @param {int[]} heights - a range of block heights
+   */
+  async processBlockRange(heights) {
+    const MAX_NB_BLOCKS = 5
+    const chunks = util.splitList(heights, MAX_NB_BLOCKS)
+
+    return util.seriesCall(chunks, async chunk => {
+      console.time('headers')
+      const headers = await util.parallelCall(chunk, async height => {
+        // Get raw block hex string from bitcoind
+        const hash = await this.client.getblockhash(height)
+        return await this.client.getblockheader(hash)
+      })
+      console.timeEnd('headers')
+      return this.processBlocks(headers)
+    })
   }
 
   /**

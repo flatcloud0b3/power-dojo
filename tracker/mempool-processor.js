@@ -152,14 +152,27 @@ class MempoolProcessor extends AbstractProcessor {
     let currentMempool = new TransactionsBundle(this.mempoolBuffer.toArray())
     this.mempoolBuffer.clear()
 
-    const filteredTxs = await currentMempool.prefilterTransactions()
+    const txsForBroadcast = new Map()
 
-    return util.seriesCall(filteredTxs, async filteredTx => {
+    let filteredTxs = await currentMempool.prefilterByOutputs()
+    await util.parallelCall(filteredTxs, async filteredTx => {
       const tx = new Transaction(filteredTx)
-      const txCheck = await tx.checkTransaction()
-      if (txCheck && txCheck.broadcast)
-        this.notifyTx(txCheck.tx)
+      await tx.processOutputs()
+      if (tx.doBroadcast)
+        txsForBroadcast[tx.txid] = tx.tx
     })
+
+    filteredTxs = await currentMempool.prefilterByInputs()
+    await util.parallelCall(filteredTxs, async filteredTx => {
+      const tx = new Transaction(filteredTx)
+      await tx.processInputs()
+      if (tx.doBroadcast)
+        txsForBroadcast[tx.txid] = tx.tx
+    })
+
+    // Send the notifications
+    for (let tx of txsForBroadcast.values())
+      this.notifyTx(tx)
   }
 
   /**

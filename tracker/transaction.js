@@ -47,10 +47,10 @@ class Transaction {
   async checkTransaction() {
     try {
       // Process transaction inputs
-      await this._processInputs()
+      await this.processInputs()
 
       // Process transaction outputs
-      await this._processOutputs()
+      await this.processOutputs()
 
       // If this point reached with no errors,
       // store the fact that this transaction was checked.
@@ -73,7 +73,7 @@ class Transaction {
    * Process transaction inputs
    * @returns {Promise}
    */
-  async _processInputs() {
+  async processInputs() {
     // Array of inputs spent
     const spends = []
     // Store input indices, keyed by `txid-outindex` for easy retrieval
@@ -151,7 +151,7 @@ class Transaction {
    * Process transaction outputs
    * @returns {Promise}
    */
-  async _processOutputs() {
+  async processOutputs() {
     // Store outputs, keyed by address. Values are arrays of outputs
     const indexedOutputs = {}
 
