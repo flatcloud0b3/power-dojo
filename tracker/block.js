@@ -39,6 +39,9 @@ class Block extends TransactionsBundle {
 
   /**
    * Register the block and transactions of interest in db
+   * @dev This method isn't used anymore.
+   *      It has been replaced by a parallel processing of blocks.
+   *      (see blocks-processor and block-worker)
    * @returns {Promise - object[]} returns an array of transactions to be broadcast
    */
   async processBlock() {
@@ -76,17 +79,13 @@ class Block extends TransactionsBundle {
    */
   async processOutputs() {
     const txsForBroadcast = new Set()
-    console.time('prefilterByOutputs')
     const filteredTxs = await this.prefilterByOutputs()
-    console.timeEnd('prefilterByOutputs')
-    console.time('processOutputs')
     await util.parallelCall(filteredTxs, async filteredTx => {
       const tx = new Transaction(filteredTx)
       await tx.processOutputs()
       if (tx.doBroadcast)
         txsForBroadcast.add(tx.tx)
     })
-    console.timeEnd('processOutputs')
     return [...txsForBroadcast]
   }
 

@@ -11,28 +11,34 @@ const util = require('../lib/util')
 const Logger = require('../lib/logger')
 const db = require('../lib/db/mysql-db-wrapper')
 const network = require('../lib/bitcoin/network')
+const RpcClient = require('../lib/bitcoind-rpc/rpc-client')
 const keys = require('../keys')[network.key]
-const AbstractProcessor = require('./abstract-processor')
 const Block = require('./block')
+const blocksProcessor = require('./blocks-processor')
 
 
 /**
  * A class allowing to process the blockchain
  */
-class BlockchainProcessor extends AbstractProcessor {
+class BlockchainProcessor {
 
   /**
    * Constructor
    * @param {object} notifSock - ZMQ socket used for notifications
    */
   constructor(notifSock) {
-    super(notifSock)
+    // RPC client
+    this.client = new RpcClient()
     // ZeroMQ socket for bitcoind blocks messages
     this.blkSock = null
     // Initialize a semaphor protecting the onBlockHash() method
     this._onBlockHashSemaphor = new Sema(1, { capacity: 50 })
+    // Array of worker threads used for parallel processing of blocks
+    this.blockWorkers = []
     // Flag tracking Initial Block Download Mode
     this.isIBD = true
+    // Initialize the blocks processor
+    blocksProcessor.init(notifSock)
   }
 
   /**
@@ -155,7 +161,6 @@ class BlockchainProcessor extends AbstractProcessor {
       if (highest == null) return null
       if (daemonNbBlocks == highest.blockHeight) return null
 
-      // Compute blocks range to be processed
       const blockRange = _.range(highest.blockHeight, daemonNbBlocks + 1)
 
       Logger.info(`Tracker : Sync ${blockRange.length} blocks`)
@@ -307,8 +312,6 @@ class BlockchainProcessor extends AbstractProcessor {
       await db.unconfirmTransactions(txids)
     }
 
-    // TODO: get accounts and notify of deletion ?
-
     await db.deleteBlocksAfterHeight(height)
   }
 
@@ -331,7 +334,6 @@ class BlockchainProcessor extends AbstractProcessor {
 
     Logger.info(`Blocks Rescan : starting a rescan for ${blockRange.length} blocks`)
 
-    // Process the blocks
     try {
       return this.processBlockRange(blockRange)
     } catch(e) {
@@ -341,64 +343,14 @@ class BlockchainProcessor extends AbstractProcessor {
   }
 
   /**
-   * Process a series of blocks
+   * Process a list of blocks
    * @param {object[]} headers - array of block headers
    */
   async processBlocks(headers) {
-    const MAX_NB_BLOCKS = 5
-    const chunks = util.splitList(headers, MAX_NB_BLOCKS)
+    const chunks = util.splitList(headers, blocksProcessor.nbWorkers)
 
-    return util.seriesCall(chunks, async chunk => {
-      const t0 = Date.now()
-      const sBlockRange = `${chunk[0].height}-${chunk[chunk.length-1].height}`
-      Logger.info(`Tracker : Beginning to process blocks ${sBlockRange}.`)
-
-      const txsForBroadcast = new Map()
-      // Initialize the blocks and process the transaction outputs
-      console.time('outputs')
-      const blocks = await util.parallelCall(chunk, async header => {
-        // Get raw block hex string from bitcoind
-        const hex = await this.client.getblock(header.hash, false)
-        const block = new Block(hex, header)
-        // Process the transaction outputs
-        const txs = await block.processOutputs()
-        txsForBroadcast.set(block.header.hash, txs)
-        return block
-      })
-      console.timeEnd('outputs')
-      // Process the transaction inputs
-      console.time('inputs')
-      await util.parallelCall(blocks, async block => {
-        const txs = await block.processInputs()
-        txsForBroadcast.set(
-          block.header.hash,
-          txs.concat(txsForBroadcast.get(block.header.hash))
-        )
-      })
-      console.timeEnd('inputs')
-      // Sort the blocks by ascending height
-      blocks.sort((a,b) => a.header.height - b.header.height)
-      // Register the block and confirm the transactions
-      console.time('confirm')
-      await util.seriesCall(blocks, async block => {
-        const blockId = await block.registerBlock()
-        const aTxsForBroadcast = [...new Set(txsForBroadcast.get(block.header.hash))]
-        await block.confirmTransactions(aTxsForBroadcast, blockId)
-      })
-      console.timeEnd('confirm')
-
-      console.time('notify')
-      await util.parallelCall(blocks, async block => {
-        const aTxsForBroadcast = [...new Set(txsForBroadcast.get(block.header.hash))]
-        for (let tx of aTxsForBroadcast)
-          this.notifyTx(tx)
-        this.notifyBlock(block.header)
-      })
-      console.timeEnd('notify')
-
-      const dt = ((Date.now()-t0)/1000).toFixed(1)
-      const per = ((Date.now()-t0)/MAX_NB_BLOCKS).toFixed(0)
-      Logger.info(`Tracker :  Finished processing blocks ${sBlockRange}, ${dt}s, ${per}ms/block`)
+    await util.seriesCall(chunks, async chunk => {
+      return blocksProcessor.processChunk(chunk)
     })
   }
 
@@ -407,17 +359,13 @@ class BlockchainProcessor extends AbstractProcessor {
    * @param {int[]} heights - a range of block heights
    */
   async processBlockRange(heights) {
-    const MAX_NB_BLOCKS = 5
-    const chunks = util.splitList(heights, MAX_NB_BLOCKS)
+    const chunks = util.splitList(heights, blocksProcessor.nbWorkers)
 
     return util.seriesCall(chunks, async chunk => {
-      console.time('headers')
       const headers = await util.parallelCall(chunk, async height => {
-        // Get raw block hex string from bitcoind
         const hash = await this.client.getblockhash(height)
         return await this.client.getblockheader(hash)
       })
-      console.timeEnd('headers')
       return this.processBlocks(headers)
     })
   }

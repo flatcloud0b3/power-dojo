@@ -406,7 +406,7 @@ class Transaction {
         locktime: this.tx.locktime,
       })
 
-      Logger.info(`Tracker : Storing transaction ${this.txid}`)
+      Logger.info(`Tracker :  Storing transaction ${this.txid}`)
     }
   }
 

@@ -96,7 +96,6 @@ class TransactionsBundle {
     let indexedOutputs = {}
 
     // Index the transaction outputs
-    console.time('outputScript2Address')
     for (const i in txs) {
       const tx = txs[i]
       const txid = tx.getId()
@@ -115,7 +114,6 @@ class TransactionsBundle {
         } catch (e) {}
       }
     }
-    console.timeEnd('outputScript2Address')
 
     // Prefilter
     const outRes = await db.getUngroupedHDAccountsByAddresses(addresses)
