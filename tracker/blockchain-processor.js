@@ -55,8 +55,7 @@ class BlockchainProcessor extends AbstractProcessor {
    * @returns {Promise}
    */
   async catchup() {
-    const highest = await db.getHighestBlock()
-    const info = await this.client.getblockchaininfo()
+    const [highest, info] = await Promise.all([db.getHighestBlock(), this.client.getblockchaininfo()])
     const daemonNbHeaders = info.headers
 
     // Consider that we are in IBD mode if Dojo is far in the past (> 13,000 blocks)
@@ -80,12 +79,11 @@ class BlockchainProcessor extends AbstractProcessor {
     try {
       Logger.info('Tracker : Tracker Startup (IBD mode)')
 
-      const info = await this.client.getblockchaininfo()
+      // Get highest block processed by the tracker
+      const [highest, info] = await Promise.all([db.getHighestBlock(), this.client.getblockchaininfo()])
       const daemonNbBlocks = info.blocks
       const daemonNbHeaders = info.headers
 
-      // Get highest block processed by the tracker
-      const highest = await db.getHighestBlock()
       const dbMaxHeight = highest.blockHeight
       let prevBlockId = highest.blockID
 
@@ -151,11 +149,10 @@ class BlockchainProcessor extends AbstractProcessor {
     try {
       Logger.info('Tracker : Tracker Startup (normal mode)')
 
-      const info = await this.client.getblockchaininfo()
+      // Get highest block processed by the tracker
+      const [highest, info] = await Promise.all([db.getHighestBlock(), this.client.getblockchaininfo()])
       const daemonNbBlocks = info.blocks
 
-      // Get highest block processed by the tracker
-      const highest = await db.getHighestBlock()
       if (highest == null) return null
       if (daemonNbBlocks == highest.blockHeight) return null
 

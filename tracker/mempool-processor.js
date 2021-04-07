@@ -75,9 +75,11 @@ class MempoolProcessor extends AbstractProcessor {
     clearInterval(this.processMempoolId)
     //clearInterval(this.displayStatsId)
 
-    resolve(this.txSock.disconnect(keys.bitcoind.zmqTx).close())
-    resolve(this.pushTxSock.disconnect(keys.ports.notifpushtx).close())
-    resolve(this.orchestratorSock.disconnect(keys.ports.orchestrator).close())
+    this.txSock.disconnect(keys.bitcoind.zmqTx).close()
+    this.pushTxSock.disconnect(keys.ports.notifpushtx).close()
+    this.orchestratorSock.disconnect(keys.ports.orchestrator).close()
+
+    return Promise.resolve();
   }
 
   /**
@@ -255,11 +257,10 @@ class MempoolProcessor extends AbstractProcessor {
    */
   async _refreshActiveStatus() {
     // Get highest header in the blockchain
-    const info = await this.client.getblockchaininfo()
+    // Get highest block processed by the tracker
+    const [highestBlock, info] = await Promise.all([db.getHighestBlock(), this.client.getblockchaininfo()])
     const highestHeader = info.headers
 
-    // Get highest block processed by the tracker
-    const highestBlock = await db.getHighestBlock()
     if (highestBlock == null || highestBlock.blockHeight == 0) {
       this.isActive = false
       return
