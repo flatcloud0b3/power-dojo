@@ -14,7 +14,6 @@ const network = require('../lib/bitcoin/network')
 const keys = require('../keys')[network.key]
 const AbstractProcessor = require('./abstract-processor')
 const Block = require('./block')
-const TransactionsBundle = require('./transactions-bundle')
 
 
 /**
