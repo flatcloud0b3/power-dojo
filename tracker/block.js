@@ -28,8 +28,10 @@ class Block extends TransactionsBundle {
     this.header = header
 
     try {
-      const block = bitcoin.Block.fromHex(hex)
-      this.transactions = block.transactions
+      if (hex != null) {
+        const block = bitcoin.Block.fromHex(hex)
+        this.transactions = block.transactions
+      }
     } catch (e) {
       Logger.error(e, 'Tracker : Block()')
       Logger.error(null, header)
