@@ -1,5 +1,6 @@
 [mysqld]
 sql_mode="NO_ENGINE_SUBSTITUTION"
+transaction_isolation=READ-COMMITTED
 performance_schema=off
 innodb_buffer_pool_size=128M
 innodb_buffer_pool_chunk_size=16M
