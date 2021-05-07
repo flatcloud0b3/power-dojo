@@ -1,11 +1,13 @@
-FROM    node:12-buster
+FROM    node:12-alpine
 
 ENV     APP_DIR                 /home/node/app
 ARG     TOR_LINUX_GID
 
+RUN     set -ex && \
+        apk --no-cache add shadow bash gcc g++ make python3
 
 # Add node user to tor group
-RUN     addgroup --system -gid ${TOR_LINUX_GID} tor && \
+RUN     addgroup -S -g ${TOR_LINUX_GID} tor && \
         usermod -a -G tor node
 
 # Install forever

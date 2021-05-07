@@ -1,4 +1,4 @@
-FROM    node:12-buster
+FROM    node:12-alpine
 
 ENV     APP_DIR              /home/node/app
 
@@ -7,8 +7,7 @@ ENV     EXPLORER_VERSION     3.0.0
 
 # Install netcat
 RUN     set -ex && \
-        apt-get update && \
-        apt-get install -y netcat
+        apk --no-cache add bash gcc g++ make python3 git netcat-openbsd
 
 # Download the source code and install it
 RUN     set -ex && \

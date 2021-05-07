@@ -1,4 +1,4 @@
-FROM    debian:buster
+FROM    debian:buster-slim
 
 ENV     TOR_HOME            /var/lib/tor
 ENV     TOR_URL             https://dist.torproject.org
@@ -24,7 +24,7 @@ ARG     TOR_LINUX_GID
 # Install Tor
 RUN     set -ex && \
         apt-get update && \
-        apt-get install -y git libevent-dev zlib1g-dev libssl-dev gcc make automake ca-certificates autoconf musl-dev coreutils gpg wget && \
+        apt-get install -y git libevent-dev zlib1g-dev libssl-dev gcc make automake ca-certificates autoconf musl-dev coreutils gpg wget python3 && \
         mkdir -p /usr/local/src/ && \
         cd /usr/local/src && \
         res=0; \
