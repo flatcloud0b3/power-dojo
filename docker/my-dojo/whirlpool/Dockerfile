@@ -1,4 +1,4 @@
-FROM    debian:buster
+FROM    debian:buster-slim
 
 ENV     WHIRLPOOL_HOME                /home/whirlpool
 ENV     WHIRLPOOL_DIR                 /usr/local/whirlpool-cli
@@ -8,8 +8,12 @@ ARG     WHIRLPOOL_LINUX_GID
 
 # Install prerequisites
 # Create group & user whirlpool
+# Create /usr/share/man/man1 directory
 # Create .whirlpool-cli subdirectory of WHIRLPOOL_HOME
 # Create /usr/local/src/whirlpool-cli directory
+
+RUN     mkdir -p /usr/share/man/man1
+
 RUN     set -ex && \
         apt-get update && \
         apt-get install -y libevent-dev zlib1g-dev libssl-dev gcc make automake ca-certificates autoconf musl-dev coreutils gpg wget default-jdk && \
