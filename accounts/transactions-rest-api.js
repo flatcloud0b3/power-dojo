@@ -112,7 +112,7 @@ class TransactionsRestApi {
    * Validate arguments of /tx requests
    * @param {object} req - http request object
    * @param {object} res - http response object
-   * @param {function} next - next express middleware
+   * @param {function} next - next tiny-http middleware
    */
   validateArgsGetTransaction(req, res, next) {
     const isValidTxid = validator.isHash(req.params.txid, 'sha256')
@@ -137,7 +137,7 @@ class TransactionsRestApi {
    * Validate arguments of /txs requests
    * @param {object} req - http request object
    * @param {object} res - http response object
-   * @param {function} next - next express middleware
+   * @param {function} next - next tiny-http middleware
    */
   validateArgsGetTransactions(req, res, next) {
     const isValidPage =

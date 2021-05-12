@@ -404,7 +404,7 @@ class XPubRestApi {
    * Validate arguments of postXpub requests
    * @param {object} req - http request object
    * @param {object} res - http response object
-   * @param {function} next - next express middleware
+   * @param {function} next - next tiny-http middleware
    */
   validateArgsPostXpub(req, res, next) {
     const isValidXpub = validator.isAlphanumeric(req.body.xpub)
@@ -436,7 +436,7 @@ class XPubRestApi {
    * Validate arguments of getXpub requests
    * @param {object} req - http request object
    * @param {object} res - http response object
-   * @param {function} next - next express middleware
+   * @param {function} next - next tiny-http middleware
    */
   validateArgsGetXpub(req, res, next) {
     const isValidXpub = validator.isAlphanumeric(req.params.xpub)
@@ -456,7 +456,7 @@ class XPubRestApi {
    * Validate arguments of postLockXpub requests
    * @param {object} req - http request object
    * @param {object} res - http response object
-   * @param {function} next - next express middleware
+   * @param {function} next - next tiny-http middleware
    */
   validateArgsPostLockXpub(req, res, next) {
     const isValidXpub = validator.isAlphanumeric(req.params.xpub)
@@ -480,7 +480,7 @@ class XPubRestApi {
    * Validate arguments of deleteXpub requests
    * @param {object} req - http request object
    * @param {object} res - http response object
-   * @param {function} next - next express middleware
+   * @param {function} next - next tiny-http middleware
    */
   validateArgsDeleteXpub(req, res, next) {
     const isValidXpub = validator.isAlphanumeric(req.params.xpub)
