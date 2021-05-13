@@ -1,5 +1,7 @@
 FROM    node:12-alpine
 
+ENV     NODE_ENV production
+
 ENV     APP_DIR                 /home/node/app
 ARG     TOR_LINUX_GID
 
