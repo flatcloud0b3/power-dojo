@@ -1,5 +1,7 @@
 FROM    node:12-alpine
 
+ENV     NODE_ENV production
+
 ENV     APP_DIR              /home/node/app
 
 ENV     EXPLORER_URL         https://github.com/janoside/btc-rpc-explorer/archive
