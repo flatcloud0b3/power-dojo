@@ -11,7 +11,7 @@ const util = require('../lib/util')
 const Logger = require('../lib/logger')
 const db = require('../lib/db/mysql-db-wrapper')
 const network = require('../lib/bitcoin/network')
-const RpcClient = require('../lib/bitcoind-rpc/rpc-client')
+const { createRpcClient } = require('../lib/bitcoind-rpc/rpc-client')
 const keys = require('../keys')[network.key]
 const Block = require('./block')
 const blocksProcessor = require('./blocks-processor')
@@ -28,7 +28,7 @@ class BlockchainProcessor {
    */
   constructor(notifSock) {
     // RPC client
-    this.client = new RpcClient()
+    this.client = createRpcClient()
     // ZeroMQ socket for bitcoind blocks messages
     this.blkSock = null
     // Initialize a semaphor protecting the onBlockHash() method
@@ -117,8 +117,8 @@ class BlockchainProcessor {
 
           await util.seriesCall(blockRange, async height => {
             try {
-              const blockHash = await this.client.getblockhash(height)
-              const header = await this.client.getblockheader(blockHash, true)
+              const blockHash = await this.client.getblockhash({ height })
+              const header = await this.client.getblockheader({ blockhash: blockHash, verbose: true })
               prevBlockId = await this.processBlockHeader(header, prevBlockId)
             } catch(e) {
               Logger.error(e, 'Tracker : BlockchainProcessor.catchupIBDMode()')
@@ -236,7 +236,7 @@ class BlockchainProcessor {
       let headers = null
 
       try {
-        const header = await this.client.getblockheader(blockHash, true)
+        const header = await this.client.getblockheader({ blockhash: blockHash, verbose: true })
         Logger.info(`Tracker : Block #${header.height} ${blockHash}`)
         // Grab all headers between this block and last known
         headers = await this.chainBacktrace([header])
@@ -286,7 +286,7 @@ class BlockchainProcessor {
 
     if (block == null) {
       // Previous block does not exist in database. Grab from bitcoind
-      const header = await this.client.getblockheader(deepest.previousblockhash, true)
+      const header = await this.client.getblockheader({ blockhash: deepest.previousblockhash, verbose: true })
       headers.push(header)
       return this.chainBacktrace(headers)
     } else {
@@ -363,8 +363,8 @@ class BlockchainProcessor {
 
     return util.seriesCall(chunks, async chunk => {
       const headers = await util.parallelCall(chunk, async height => {
-        const hash = await this.client.getblockhash(height)
-        return await this.client.getblockheader(hash)
+        const hash = await this.client.getblockhash({ height })
+        return await this.client.getblockheader({ blockhash: hash })
       })
       return this.processBlocks(headers)
     })

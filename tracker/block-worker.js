@@ -8,7 +8,7 @@ const { isMainThread, parentPort } = require('worker_threads')
 const network = require('../lib/bitcoin/network')
 const keys = require('../keys')[network.key]
 const db = require('../lib/db/mysql-db-wrapper')
-const RpcClient = require('../lib/bitcoind-rpc/rpc-client')
+const { createRpcClient } = require('../lib/bitcoind-rpc/rpc-client')
 const Block = require('./block')
 
 
@@ -104,7 +104,7 @@ async function processMessage(msg) {
  */
 async function initBlock(header) {
   status = INITIALIZED
-  const hex = await rpcClient.getblock(header.hash, false)
+  const hex = await rpcClient.getblock({ blockhash: header.hash, verbosity: 0 })
   block = new Block(hex, header)
   return true
 }
@@ -153,7 +153,7 @@ function reset() {
 /**
  * MAIN
  */
-const rpcClient = new RpcClient()
+const rpcClient = createRpcClient()
 let block = null
 let txsForBroadcast = []
 let status = IDLE
