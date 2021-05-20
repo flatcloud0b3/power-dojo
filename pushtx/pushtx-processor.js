@@ -9,7 +9,7 @@ const zmq = require('zeromq')
 const Logger = require('../lib/logger')
 const errors = require('../lib/errors')
 const db = require('../lib/db/mysql-db-wrapper')
-const RpcClient = require('../lib/bitcoind-rpc/rpc-client')
+const { createRpcClient } = require('../lib/bitcoind-rpc/rpc-client')
 const addrHelper = require('../lib/bitcoin/addresses-helper')
 const network = require('../lib/bitcoin/network')
 const activeNet = network.network
@@ -37,7 +37,7 @@ class PushTxProcessor {
     this.notifSock = null
     this.sources = new Sources()
     // Initialize the rpc client
-    this.rpcClient = new RpcClient()
+    this.rpcClient = createRpcClient()
   }
 
   /**
@@ -109,7 +109,7 @@ class PushTxProcessor {
     // At this point, the raw hex parses as a legitimate transaction.
     // Attempt to send via RPC to the bitcoind instance
     try {
-      const txid = await this.rpcClient.sendrawtransaction(rawtx)
+      const txid = await this.rpcClient.sendrawtransaction({ hexstring: rawtx })
       Logger.info('PushTx : Pushed!')
       // Update the stats
       status.updateStats(value)

@@ -11,7 +11,7 @@ const util = require('../lib/util')
 const Logger = require('../lib/logger')
 const db = require('../lib/db/mysql-db-wrapper')
 const network = require('../lib/bitcoin/network')
-const RpcClient = require('../lib/bitcoind-rpc/rpc-client')
+const { createRpcClient } = require('../lib/bitcoind-rpc/rpc-client')
 const keys = require('../keys')[network.key]
 const Transaction = require('./transaction')
 const TransactionsBundle = require('./transactions-bundle')
@@ -28,7 +28,7 @@ class MempoolProcessor {
    */
   constructor(notifSock) {
     // RPC client
-    this.client = new RpcClient()
+    this.client = createRpcClient()
     // ZeroMQ socket for notifications sent to others components
     this.notifSock = notifSock
     // Mempool buffer
@@ -261,7 +261,7 @@ class MempoolProcessor {
     if (unconfirmedTxs.length > 0) {
       await util.parallelCall(unconfirmedTxs, tx => {
         try {
-          return this.client.getrawtransaction(tx.txnTxid, true)
+          return this.client.getrawtransaction( { txid: tx.txnTxid, verbose: true })
             .then(async rtx => {
               if (!rtx.blockhash) return null
               // Transaction is confirmed
