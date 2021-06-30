@@ -24,6 +24,7 @@
 #### Bug fixes ####
 
 - [#mr236](https://code.samourai.io/dojo/samourai-dojo/-/merge_requests/236) fix auth errors
+- [#mr237](https://code.samourai.io/dojo/samourai-dojo/-/merge_requests/237) fix zmq block notifications
 
 #### Security ####
 
@@ -33,6 +34,8 @@
 
 - pajasevi
 - lukechilds
+- kenshin-samourai
+- zeroleak
 
 
 <a name="1_10_0"/>
