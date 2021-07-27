@@ -187,7 +187,7 @@ class TransactionsBundle {
  * Additionally, the transaction comes in a block
  * Orphaned transactions are deleted during the routine check
  */
-TransactionsBundle.cache = LRU({
+TransactionsBundle.cache = new LRU({
   // Maximum number of txids to store in cache
   max: 100000,
   // Function used to compute length of item

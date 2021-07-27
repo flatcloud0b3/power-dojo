@@ -6,7 +6,7 @@
 
 const _ = require('lodash')
 const zmq = require('zeromq')
-const Sema = require('async-sema')
+const { Sema } = require('async-sema')
 const util = require('../lib/util')
 const Logger = require('../lib/logger')
 const db = require('../lib/db/mysql-db-wrapper')
