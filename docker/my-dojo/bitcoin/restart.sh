@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+# Generate RPC auth payload
+BITCOIND_RPC_AUTH=$(./rpcauth.py $BITCOIND_RPC_USER $BITCOIND_RPC_PASSWORD)
+
 echo "## Start bitcoind #############################"
 
 bitcoind_options=(
@@ -18,11 +21,10 @@ bitcoind_options=(
   -proxy=$NET_DOJO_TOR_IPV4:9050
   -rpcallowip=0.0.0.0/0
   -rpcbind=$NET_DOJO_BITCOIND_IPV4
-  -rpcpassword=$BITCOIND_RPC_PASSWORD
   -rpcport=28256
   -rpcthreads=$BITCOIND_RPC_THREADS
   -rpcworkqueue=$BITCOIND_RPC_WORK_QUEUE
-  -rpcuser=$BITCOIND_RPC_USER
+  -rpcauth=$BITCOIND_RPC_AUTH
   -server=1
   -txindex=1
   -zmqpubhashblock=tcp://0.0.0.0:9502
