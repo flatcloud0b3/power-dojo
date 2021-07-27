@@ -5,7 +5,7 @@
 'use strict'
 
 const os = require('os')
-const Sema = require('async-sema')
+const { Sema } = require('async-sema')
 const { Worker } = require('worker_threads')
 const Logger = require('../lib/logger')
 const util = require('../lib/util')

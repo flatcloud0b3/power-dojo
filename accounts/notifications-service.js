@@ -38,7 +38,7 @@ class NotificationsService {
 
     // Cache registering the most recent subscriptions received
     // Used to filter multiple subscriptions sent by external apps.
-    this.cacheSubs = LRU({
+    this.cacheSubs = new LRU({
       // Maximum number of subscriptions to store in cache
       // Estimate: 1000 clients with an average of 5 subscriptions
       max: 5000,
