@@ -64,7 +64,7 @@ class BlockchainProcessor {
     const daemonNbHeaders = info.headers
 
     // Consider that we are in IBD mode if Dojo is far in the past (> 13,000 blocks)
-    this.isIBD = (highest.blockHeight < 655000) || (highest.blockHeight < daemonNbHeaders - 13000)
+    this.isIBD = (highest.blockHeight < 681000) || (highest.blockHeight < daemonNbHeaders - 13000)
 
     if (this.isIBD)
       return this.catchupIBDMode()
