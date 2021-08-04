@@ -5,7 +5,7 @@
 'use strict'
 
 const _ = require('lodash')
-const zmq = require('zeromq')
+const zmq = require('zeromq/v5-compat')
 const { Sema } = require('async-sema')
 const util = require('../lib/util')
 const Logger = require('../lib/logger')

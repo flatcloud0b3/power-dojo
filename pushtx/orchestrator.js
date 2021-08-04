@@ -4,7 +4,7 @@
  */
 'use strict'
 
-const zmq = require('zeromq')
+const zmq = require('zeromq/v5-compat')
 const { Sema } = require('async-sema')
 const Logger = require('../lib/logger')
 const db = require('../lib/db/mysql-db-wrapper')

@@ -5,7 +5,7 @@
 'use strict'
 
 const _ = require('lodash')
-const zmq = require('zeromq')
+const zmq = require('zeromq/v5-compat')
 const bitcoin = require('bitcoinjs-lib')
 const util = require('../lib/util')
 const Logger = require('../lib/logger')
