@@ -5,7 +5,7 @@
 'use strict'
 
 const bitcoin = require('bitcoinjs-lib')
-const zmq = require('zeromq')
+const zmq = require('zeromq/v5-compat')
 const Logger = require('../lib/logger')
 const errors = require('../lib/errors')
 const db = require('../lib/db/mysql-db-wrapper')
@@ -46,7 +46,7 @@ class PushTxProcessor {
   initNotifications(config) {
     // Notification socket for the tracker
     this.notifSock = zmq.socket('pub')
-    this.notifSock.bindSync(config.uriSocket)
+    this.notifSock.bind(config.uriSocket)
   }
 
   /**

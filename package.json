@@ -37,7 +37,7 @@
     "validator": "13.6.0",
     "websocket": "1.0.34",
     "workerpool": "6.1.5",
-    "zeromq": "4.2.0"
+    "zeromq": "6.0.0-beta.6"
   },
   "devDependencies": {
     "mocha": "9.0.3"
