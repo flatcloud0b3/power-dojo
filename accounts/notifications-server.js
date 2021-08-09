@@ -27,9 +27,6 @@ class NotificationsServer {
     this.httpServer = null
     // Notifications service
     this.notifService = null
-    // Initialize the zmq socket for communications
-    // with the tracker
-    this._initTrackerSocket()
   }
 
   /**
@@ -42,6 +39,10 @@ class NotificationsServer {
     if (this.notifService !== null) return
 
     this.notifService = new NotificationsService(httpServer.server)
+
+    // Initialize the zmq socket for communications
+    // with the tracker
+    this._initTrackerSocket()
   }
 
 
