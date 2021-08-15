@@ -47,7 +47,7 @@ class MempoolProcessor {
 
   /**
    * Start processing the mempool
-   * @returns {Promise}
+   * @returns {Promise<void>}
    */
   async start() {
     this.checkUnconfirmedId = setInterval(
@@ -143,7 +143,7 @@ class MempoolProcessor {
 
   /**
    * Process transactions from the mempool buffer
-   * @returns {Promise}
+   * @returns {Promise<void>}
    */
   async processMempool() {
     // Refresh the isActive flag
@@ -181,7 +181,7 @@ class MempoolProcessor {
   /**
    * On reception of a new transaction from bitcoind mempool
    * @param {Buffer} buf - transaction
-   * @returns {Promise}
+   * @returns {Promise<void>}
    */
   async onTx(buf) {
     if (this.isActive) {
@@ -201,7 +201,7 @@ class MempoolProcessor {
   /**
    * On reception of a new transaction from /pushtx
    * @param {Buffer} buf - transaction
-   * @returns {Promise}
+   * @returns {Promise<void>}
    */
   async onPushTx(buf) {
     try {
@@ -249,7 +249,7 @@ class MempoolProcessor {
 
   /**
    * Check unconfirmed transactions
-   * @returns {Promise}
+   * @returns {Promise<void>}
    */
   async checkUnconfirmed() {
     const t0 = Date.now()
@@ -287,12 +287,13 @@ class MempoolProcessor {
     // Logs
     const ntx = unconfirmedTxs.length
     const dt = ((Date.now() - t0) / 1000).toFixed(1)
-    const per = (ntx == 0) ? 0 : ((Date.now() - t0) / ntx).toFixed(0)
+    const per = (ntx === 0) ? 0 : ((Date.now() - t0) / ntx).toFixed(0)
     Logger.info(`Tracker : Finished processing unconfirmed transactions ${dt}s, ${ntx} tx, ${per}ms/tx`)
   }
 
   /**
    * Sets the isActive flag
+   * @private
    */
   async _refreshActiveStatus() {
     // Get highest header in the blockchain
@@ -300,7 +301,7 @@ class MempoolProcessor {
     const [highestBlock, info] = await Promise.all([db.getHighestBlock(), this.client.getblockchaininfo()])
     const highestHeader = info.headers
 
-    if (highestBlock == null || highestBlock.blockHeight == 0) {
+    if (highestBlock == null || highestBlock.blockHeight === 0) {
       this.isActive = false
       return
     }

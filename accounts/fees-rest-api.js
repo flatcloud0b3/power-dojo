@@ -9,7 +9,7 @@ const rpcFees = require('../lib/bitcoind-rpc/fees')
 const authMgr = require('../lib/auth/authorizations-manager')
 const HttpServer = require('../lib/http-server/http-server')
 
-const debugApi = !!(process.argv.indexOf('api-debug') > -1)
+const debugApi = process.argv.indexOf('api-debug') > -1
 
 
 /**

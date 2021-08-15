@@ -94,7 +94,7 @@ class Orchestrator {
           break
 
         for (let tx of txs) {
-          let hasParentTx = (tx.schParentTxid != null) && (tx.schParentTxid != '')
+          let hasParentTx = (tx.schParentTxid != null) && (tx.schParentTxid !== '')
           let parentTx = null
 
           // Check if previous transaction has been confirmed
@@ -158,11 +158,11 @@ class Orchestrator {
   /**
    * Update triggers in chain of transactions
    * following a transaction identified by its txid
-   * @param {integer} parentId - parent id
-   * @param {integer} shift - delta to be added to the triggers
+   * @param {number} parentId - parent id
+   * @param {number} shift - delta to be added to the triggers
    */
   async updateTriggers(parentId, shift) {
-    if (shift == 0)
+    if (shift === 0)
       return
 
     const txs = await db.getNextScheduledTransactions(parentId)

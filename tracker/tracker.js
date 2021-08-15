@@ -34,7 +34,7 @@ class Tracker {
 
   /**
    * Start the tracker
-   * @returns {Promise}
+   * @returns {Promise<void>}
    */
   async start() {
     if (!this.initialized) {
