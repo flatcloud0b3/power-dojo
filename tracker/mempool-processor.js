@@ -259,28 +259,33 @@ class MempoolProcessor {
     const unconfirmedTxs = await db.getUnconfirmedTransactions()
 
     if (unconfirmedTxs.length > 0) {
-      await util.parallelCall(unconfirmedTxs, tx => {
-        try {
-          return this.client.getrawtransaction( { txid: tx.txnTxid, verbose: true })
-            .then(async rtx => {
-              if (!rtx.blockhash) return null
-              // Transaction is confirmed
-              const block = await db.getBlockByHash(rtx.blockhash)
-              if (block && block.blockID) {
-                Logger.info(`Tracker : Marking TXID ${tx.txnTxid} confirmed`)
-                return db.confirmTransactions([tx.txnTxid], block.blockID)
+      const unconfirmedTxLists = util.splitList(unconfirmedTxs, 10)
+
+      await util.seriesCall(unconfirmedTxLists, async (txList) => {
+        return await util.parallelCall(txList, tx => {
+          try {
+            return this.client.getrawtransaction( { txid: tx.txnTxid, verbose: true })
+              .then(async rtx => {
+                if (!rtx.blockhash) return null
+                // Transaction is confirmed
+                const block = await db.getBlockByHash(rtx.blockhash)
+                if (block && block.blockID) {
+                  Logger.info(`Tracker : Marking TXID ${tx.txnTxid} confirmed`)
+                  return db.confirmTransactions([tx.txnTxid], block.blockID)
+                }
+              },
+              (e) => {
+                Logger.error(e, 'Tracker : MempoolProcessor.checkUnconfirmed()')
+                // Transaction not in mempool. Update LRU cache and database
+                TransactionsBundle.cache.del(tx.txnTxid)
+                // TODO: Notify clients of orphaned transaction
+                return db.deleteTransaction(tx.txnTxid)
               }
-            },
-            () => {
-              // Transaction not in mempool. Update LRU cache and database
-              TransactionsBundle.cache.del(tx.txnTxid)
-              // TODO: Notify clients of orphaned transaction
-              return db.deleteTransaction(tx.txnTxid)
-            }
-          )
-        } catch(e) {
-          Logger.error(e, 'Tracker : MempoolProcessor.checkUnconfirmed()')
-        }
+            )
+          } catch(e) {
+            Logger.error(e, 'Tracker : MempoolProcessor.checkUnconfirmed()')
+          }
+        })
       })
     }
 
