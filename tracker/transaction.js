@@ -365,7 +365,8 @@ class Transaction {
         const indices = _.range(minIdx, maxIdx)
 
         const derived = await hdaHelper.deriveAddresses(xpub, chain, indices, hdType)
-        Array.prototype.push.apply(newAddresses, derived)
+
+        newAddresses.push(...derived)
 
         Logger.info(`Tracker : Derived hdID(${hdAccount.hdID}) M/${chain}/${indices.join(',')}`)
 
