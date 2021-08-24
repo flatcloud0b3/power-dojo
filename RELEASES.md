@@ -22,6 +22,9 @@
 
 ## Samourai Dojo v1.11.0 ##
 
+## Breaking ##
+- Dojo now requires Node.js v14
+
 #### Features ####
 
 - [#mr242](https://code.samourai.io/dojo/samourai-dojo/-/merge_requests/242) postmix decoy change addresses
