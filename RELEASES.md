@@ -3,6 +3,7 @@
 
 ## Releases ##
 
+- [v1.11.0](#1_11_0)
 - [v1.10.1](#1_10_1)
 - [v1.10.0](#1_10_0)
 - [v1.9.0](#1_9_0)
@@ -16,6 +17,24 @@
 - [v1.3.0](#1_3_0)
 - [v1.2.0](#1_2_0)
 - [v1.1.0](#1_1_0)
+
+<a name="1_11_0"/>
+
+## Samourai Dojo v1.11.0 ##
+
+#### Features ####
+
+- [#mr242](https://code.samourai.io/dojo/samourai-dojo/-/merge_requests/242) postmix decoy change addresses
+- [#mr241](https://code.samourai.io/dojo/samourai-dojo/-/merge_requests/241) update ZeroMQ and Node.js
+- [#mr240](https://code.samourai.io/dojo/samourai-dojo/-/merge_requests/240) update Node.js dependencies
+- [#mr239](https://code.samourai.io/dojo/samourai-dojo/-/merge_requests/239) update Tor and remove v2 onion addresses
+- [#mr238](https://code.samourai.io/dojo/samourai-dojo/-/merge_requests/238) use RPC auth instead of basic auth
+- other minor improvements
+
+#### Bug fixes ####
+
+- [#mr237](https://code.samourai.io/dojo/samourai-dojo/-/merge_requests/237) fix tracker initialization
+- other minor fixes
 
 <a name="1_10_1"/>
 
