@@ -29,6 +29,11 @@ class FeesRestApi {
       authMgr.checkAuthentication.bind(authMgr),
       this.getFees.bind(this),
     )
+    this.httpServer.app.post(
+        '/fees',
+        authMgr.checkAuthentication.bind(authMgr),
+        this.getFees.bind(this),
+    )
     // Refresh the network fees
     rpcFees.refresh()
   }
