@@ -37,6 +37,7 @@
 #### Bug fixes ####
 
 - [#mr237](https://code.samourai.io/dojo/samourai-dojo/-/merge_requests/237) fix tracker initialization
+- [commit 3ee4ecc6](https://code.samourai.io/dojo/samourai-dojo/-/commit/3ee4ecc645dc88632f4e7bfd00fafe602bcaef13) fix importing from local_bitcoind
 - other minor fixes
 
 <a name="1_10_1"/>
