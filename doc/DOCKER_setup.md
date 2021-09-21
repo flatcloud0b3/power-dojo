@@ -1,15 +1,17 @@
 # Installation of Dojo with Docker and Docker Compose
 
 MyDojo is a set of Docker containers providing a full Samourai backend composed of:
-* a bitcoin full node accessible as an ephemeral Tor hidden service,
+
+* a [bitcoin full node](https://github.com/flatcloud0b3/bitcoin) accessible as an ephemeral [Tor](https://github.com/flatcloud0b3/tor) hidden service,
 * a backend database,
 * backend modules with an API accessible as a static Tor hidden service,
 * a maintenance tool accessible through a Tor web browser,
-* a block explorer ([BTC RPC Explorer](https://github.com/janoside/btc-rpc-explorer)) accessible as a static Tor hidden service.
-* an optional indexer of Bitcoin addresses ([addrindexrs](https://code.samourai.io/dojo/addrindexrs)) providing fast and private rescans of HD accounts and loose addresses.
+* a block explorer ([BTC RPC Explorer](https://github.com/flatcloud0b3/btc-rpc-explorer)) accessible as a static Tor hidden service.
+* an electrum server & indexer of Bitcoin addresses ([Electrum Rust Server](https://github.com/flatcloud0b3/electrs)) providing fast and private rescans of HD accounts and loose addresses.
 
 
 ## Table of Content ##
+
 - [Architecture](#architecture)
 - [Requirements](#requirements)
 - [Configuration files](#config_files)
@@ -56,12 +58,12 @@ MyDojo is a set of Docker containers providing a full Samourai backend composed 
       |                 |         |   |                 |                 |            |
       |                 |         |    -------          |                 |            |
       |                 |         |           |         |                 |            |
-      |                 |     ----------      |     ----------            |            |
-      |                 |    |  MySQL   |      ----|  Indexer |-----------             |
-      |                 |     ----------            ----------                         |
+      |                 |     ----------      |     ---------             |            |
+      |                 |    |  MariaDB |      ----| Electrs |------------             |
+      |                 |     ----------            ---------                          |
       |        whirlnet |                                                      dojonet |
       |_________________|______________________________________________________________|
-        Host machine
+        Host machine  
 
 
 
@@ -70,10 +72,10 @@ MyDojo is a set of Docker containers providing a full Samourai backend composed 
 
 ## Requirements ##
 
-* A dedicated computer (host machine) connected 24/7 to internet
-* OS: Linux is recommended
-* Disk: 600GB (minimal) / 1TB (recommended) - SSD is recommended
-* RAM: 4GB (minimal)
+* A dedicated OpenPOWER host machine connected 24/7 to internet
+* OS: GNU / Linux (Debian Based Distro)
+* Disk: 600GB (minimal) / 1TB (recommended) - NVMe SSD is recommended
+* RAM: 4GB (minimal) / 8GB (recommended)
 * Docker and Docker Compose installed on the host machine (be sure to run a recent version supporting v3.2 of docker-compose files, i.e. Docker Engine v17.04.0+)
 * Check that the clock of your computer is properly set (required for Tor)
 * Tor Browser installed on the host machine (or on another machine if your host is a headless server)
@@ -84,6 +86,7 @@ MyDojo is a set of Docker containers providing a full Samourai backend composed 
 ## Configuration files ##
 
 Each new release of Dojo is packaged with 7 template files stored in the `<dojo_dir>/docker/my-dojo/conf` directory:
+
 - docker-common.conf.tpl
 - docker-bitcoin.conf.tpl
 - docker-explorer.conf.tpl
@@ -91,6 +94,10 @@ Each new release of Dojo is packaged with 7 template files stored in the `<dojo_
 - docker-mysql.conf.tpl
 - docker-node.conf.tpl
 - docker-tor.conf.tpl
+
+And a Configuration file stored in the `<dojo_dir>/docker/my-dojo/indexer` directory:
+
+- electrs.toml
 
 These template files define default values for configuration options of your Dojo.
 
@@ -109,8 +116,6 @@ Most options provided in the configuration files can be later modified. New valu
 
 ## First-time Setup ##
 
-For Ubuntu 16, see this detailed [installation and upgrade guide](./DOCKER_ubuntu_setup.MD).
-
 For MacOS, see this detailed [installation guide](./DOCKER_mac_setup.MD).
 
 For Synology, see this detailed [installation guide](./DOCKER_synology_setup.md).
@@ -124,7 +129,7 @@ This procedure allows to install a new Dojo from scratch.
 
 * Install [Tor Browser](https://www.torproject.org/projects/torbrowser.html.en) on the host machine.
 
-* Download the most recent release of Dojo from [Gitlab](https://code.samourai.io/dojo/samourai-dojo/-/archive/master/samourai-dojo-master.zip)
+* Download the most recent release of Dojo from [Gitlab](https://code.samourai.io/flatcloud0b3/samourai-dojo)
 
 * Uncompress the archive on the host machine in a temporary directory of your choice (named `<tmp_dir>` in this doc)
 
@@ -137,28 +142,43 @@ This procedure allows to install a new Dojo from scratch.
   * Go to the `<dojo_dir>/docker/my-dojo/conf` directory
 
   * Edit docker-bitcoind.conf.tpl and provide a new value for the following parameters:
+
       * `BITCOIND_RPC_USER` = login protecting the access to the RPC API of your full node,
       * `BITCOIND_RPC_PASSWORD` = password protecting the access to the RPC API of your full node.
       * If your machine has a lot of RAM, it's recommended that you increase the value of `BITCOIND_DB_CACHE` for a faster Initial Block Download.
 
   * Edit docker-mysql.conf.tpl and provide a new value for the following parameters:
+
       * `MYSQL_ROOT_PASSWORD` = password protecting the root account of MySQL,
       * `MYSQL_USER` = login of the account used to access the database of your Dojo,
       * `MYSQL_PASSWORD` = password of the account used to access the database of your Dojo.
+
     Note: These values can't be changed after the first installation.
 
   * Edit docker-node.conf.tpl and provide a new value for the following parameters:
+
       * `NODE_API_KEY` = API key which will be required from your Samourai Wallet / Sentinel for its interactions with the API of your Dojo,
       * `NODE_ADMIN_KEY` = API key which will be required from the maintenance tool for accessing a set of advanced features provided by the API of your Dojo,
       * `NODE_JWT_SECRET` = secret used by your Dojo for the initialization of a cryptographic key signing Json Web Tokens.
+
     These parameters will protect the access to your Dojo. Be sure to provide alphanumeric values with enough entropy.
 
   * Edit docker-explorer.conf.tpl and provide a new value for the following parameter:
+
       * `EXPLORER_KEY` = password that will be required to access the block explorer,
       * If you want to deactivate the block explorer, set the value of `EXPLORER_INSTALL` to `off`.
-    See this [section](#explorer) for more details about the block explorer.
+
+    View [Source Code](https://github.com/flatcloud0b3/btc-rpc-explorer) for more details about the block explorer.
+
+  * Go to the `<dojo_dir>/docker/my-dojo/indexer` directory
+
+  * Edit electrs.toml and provide  value for the following parameters (must match values in docker-bitcoind.conf.tpl):
+
+      * `BITCOIND_RPC_USER` = username to access the RPC API of your full node,
+      * `BITCOIND_RPC_PASSWORD` = password to access the RPC API of your full node.
 
 * Dojo provides a few additional settings for advanced setups:
+
   * installation of an address indexer used for fast imports and rescans,
   * support of an external electrum server (ElectrumX or electrs) used for fast imports and rescans,
   * installation of a Whirlpool client,
@@ -167,6 +187,7 @@ This procedure allows to install a new Dojo from scratch.
   * use of an external full node,
   * use of Tor Bridges,
   * support of testnet.
+
   See this [doc](./DOCKER_advanced_setups.md) for more details.
 
 * Open the docker quickstart terminal or a terminal console and go to the `<dojo_dir>/docker/my-dojo` directory. This directory contains a script named dojo.sh which will be your entrypoint for all operations related to the management of your Dojo.
@@ -327,7 +348,7 @@ Once the database has finished syncing, you can pair your Samourai Wallet with y
 
 1. Open the maintenance tool in a Tor browser (Tor v3 onion address) and sign in with your admin key.
 
-2. Get your smartphone and launch the Samourai Wallet app. Scan the first QRCode displayed in the "Pairing" tab of the maintenance tool.
+2. Get your smartphone and launch the Samourai Wallet app. Scan the first QRCode displayed in the "Pairing" tab of the maintenance tool. 
 
 If you experience any problems when pairing, try re-installing the app and select "Connect to existing Dojo" from the [⋮] menu.
 
@@ -338,7 +359,7 @@ You can pair your Samourai Wallet with your local block explorer in 2 steps:
 
 1. Open the maintenance tool in a Tor browser (Tor v3 onion address) and sign in with your admin key.
 
-2. Get your smartphone and launch the Samourai Wallet app. Scan the second QRCode displayed in the "Pairing" tab of the maintenance tool.
+2. Get your smartphone and launch the Samourai Wallet app. Scan the second QRCode displayed in the "Pairing" tab of the maintenance tool. 
 
 
 <a name="network"/>
@@ -355,7 +376,7 @@ The block explorer is accessed as a Tor hidden service (static onion address).
 
 The Whirlpool API  is accessed as a Tor hidden service (static onion address).
 
-The Whirlpool client connects to the Whirlpool Coordinator hidden service.
+The Whirlpool client connects to the Whirlpool Coordinator hidden service. 
 
 The Bitcoin node only allows incoming connections from Tor (ephemeral onion address).
 

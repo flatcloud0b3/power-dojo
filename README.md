@@ -1,6 +1,6 @@
-# Samourai Dojo
+# Power-Dojo [ Dojo on OpenPOWER ]
 
-Samourai Dojo is the backing server for Samourai Wallet. Provides HD account & loose addresses (BIP47) balances & transactions lists. Provides unspent output lists to the wallet. PushTX endpoint broadcasts transactions through the backing bitcoind node.
+Power-Dojo is a server software stack built on top of the [Bitcoin Core full-node](https://github.com/flatcloud0b3/bitcoin), engineered for [OpenPOWER Architecture (ppc64el)](https://openpowerfoundation.org/) - the most open and high performance processor architecture and ecosystem in the industry. Power-Dojo augments the Bitcoin full-node to power Samourai Wallets & Electrum Wallets. It also provides HD account & loose addresses (BIP47) balances & transactions lists. Provides unspent output lists to the wallet. PushTX endpoint broadcasts transactions through the backing bitcoind node.
 
 [View API documentation](../master/doc/README.md)
 
@@ -17,8 +17,8 @@ It provides in a single command the setup of a full Samourai backend composed of
 * the backend database,
 * the backend modules with an API accessible as a static Tor hidden service,
 * a maintenance tool accessible through a Tor web browser,
-* a block explorer ([BTC RPC Explorer](https://github.com/janoside/btc-rpc-explorer)) accessible through a Tor web browser,
-* an optional indexer of Bitcoin addresses ([addrindexrs](hhttps://code.samourai.io/dojo/addrindexrs)) providing fast and private rescans of HD accounts and loose addresses.
+* a block explorer ([BTC RPC Explorer](https://github.com/flatcloud0b3/btc-rpc-explorer)) accessible through a Tor web browser,
+* an electrum server & indexer of Bitcoin addresses ([Electrum Rust Server](https://github.com/flatcloud0b3/electrs)) providing fast and private rescans of HD accounts and loose addresses.
 
 See [the documentation](./doc/DOCKER_setup.md) for detailed setup instructions.
 

@@ -1,15 +1,16 @@
-FROM    node:14-alpine
+FROM    node:14-buster
 
 ENV     NODE_ENV production
 
 ENV     APP_DIR                 /home/node/app
 ARG     TOR_LINUX_GID
 
-RUN     set -ex && \
-        apk --no-cache add shadow bash gcc g++ make python3
+# Install Required Dependencies
+RUN     apt-get update && \
+        apt-get install -y libzmq3-dev
 
 # Add node user to tor group
-RUN     addgroup -S -g ${TOR_LINUX_GID} tor && \
+RUN     addgroup --system -gid ${TOR_LINUX_GID} tor && \
         usermod -a -G tor node
 
 # Install forever
@@ -24,6 +25,7 @@ COPY    . "$APP_DIR"
 
 # Install node modules required by the app
 RUN     cd "$APP_DIR" && \
+        npm install zeromq@6.0.0-beta.6 --zmq-shared \
         npm ci --only=production
 
 # Copy config file
@@ -45,3 +47,4 @@ RUN     chown node:node "$APP_DIR/wait-for-it.sh" && \
         chmod g+x "$APP_DIR/wait-for-it.sh"
 
 USER    node
+

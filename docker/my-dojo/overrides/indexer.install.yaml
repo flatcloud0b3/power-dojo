@@ -16,8 +16,9 @@ services:
       - ./conf/docker-indexer.conf
     restart: on-failure
     command: "/wait-for-it.sh tor:9050 --timeout=360 --strict -- /restart.sh"
+    ports:
+      - "50001:50001"
     expose:
-      - "50001"
       - "8080"
     volumes:
       - data-indexer:/home/indexer

@@ -6,10 +6,8 @@ indexer_options=(
   --index-batch-size="$INDEXER_BATCH_SIZE"
   --jsonrpc-import
   --db-dir="/home/indexer/db"
-  --indexer-rpc-addr="$NET_DOJO_INDEXER_IPV4:50001"
-  --indexer-http-addr="$NET_DOJO_INDEXER_IPV4:8080"
+  --electrum-rpc-addr="$NET_DOJO_INDEXER_IPV4:50001"
   --daemon-rpc-addr="$BITCOIND_IP:$BITCOIND_RPC_PORT"
-  --cookie="$BITCOIND_RPC_USER:$BITCOIND_RPC_PASSWORD"
   --txid-limit="$INDEXER_TXID_LIMIT"
   --blocktxids-cache-size-mb="$INDEXER_BLK_TXIDS_CACHE_SIZE_MB"
 )
@@ -20,4 +18,5 @@ else
   bitcoind_options+=(--network="mainnet")
 fi
 
-addrindexrs "${indexer_options[@]}"
+electrs "${indexer_options[@]}"
+

@@ -1,62 +1,48 @@
 FROM    debian:buster-slim
 
-ENV     TOR_HOME            /var/lib/tor
-ENV     TOR_URL             https://dist.torproject.org
-ENV     TOR_MIRROR_URL      https://tor.eff.org/dist
-ENV     TOR_VERSION         0.4.6.6
-ENV     TOR_GPG_KS_URI      hkp://keyserver.ubuntu.com:80
-ENV     TOR_GPG_KEY1        0xEB5A896A28988BF5
-ENV     TOR_GPG_KEY2        0xC218525819F78451
-ENV     TOR_GPG_KEY3        0x21194EBB165733EA
-ENV     TOR_GPG_KEY4        0x6AFEE6D49E92B601
 
-ENV     GOLANG_DL_URL       https://dl.google.com/go
-ENV     GOLANG_ARCHIVE      go1.16.6.linux-amd64.tar.gz
-ENV     GOLANG_SHA256       be333ef18b3016e9d7cb7b1ff1fdb0cac800ca0be4cf2290fe613b3d069dfe0d
+#################################################################
+# INSTALL TOR
+#################################################################
+ENV     TOR_HOME            /var/lib/tor
+
+ENV     TOR_PGP_SIG_URL     https://github.com/flatcloud0b3/tor/releases/download/v0.4.6.7/tor-0.4.6.7-linux-gnu-ppc64le.deb.sig
+ENV     TOR_DEB_URL         https://github.com/flatcloud0b3/tor/releases/download/v0.4.6.7/tor-0.4.6.7-linux-gnu-ppc64le.deb
+ENV     TOR_SHA256          6ee4211e2217cc40fdfcad81b96a9b3188adc23eb4d68fb45b2c913abde1f714
+ENV     TOR_DEB_SIG         tor-0.4.6.7-linux-gnu-ppc64le.deb.sig
+
+ENV     FLATCLOUD_PGP_KEY   E28D24AA6FE1AD3F6F258BA0D9CE2F6D968DDC54
+ENV     PGP_KS_URL          hkp://keyserver.ubuntu.com
 
 ENV     OBFS4_URL           https://github.com/Yawning/obfs4.git
 ENV     OBFS4_VERSION       0.0.11
 
+ENV     GOLANG_SHA256       03e02b2ac6dc1601203f335385b9bbe15a55677066d9a1a1280b5fcfa6ec4738
+ENV     GOLANG_ARCHIVE      go1.16.7.linux-ppc64le.tar.gz
+ENV     GOLANG_DL_URL       https://dl.google.com/go
+
 ARG     TOR_LINUX_UID
 ARG     TOR_LINUX_GID
 
-
-# Install Tor
 RUN     set -ex && \
         apt-get update && \
-        apt-get install -y git libevent-dev zlib1g-dev libssl-dev gcc make automake ca-certificates autoconf musl-dev coreutils gpg wget python3 && \
-        mkdir -p /usr/local/src/ && \
-        cd /usr/local/src && \
-        res=0; \
-        wget -qO "tor-$TOR_VERSION.tar.gz" "$TOR_URL/tor-$TOR_VERSION.tar.gz" || res=$?; \
-        if [ $res -gt 0 ]; then \
-          wget -qO "tor-$TOR_VERSION.tar.gz" "$TOR_MIRROR_URL/tor-$TOR_VERSION.tar.gz"; \
-        fi && \
-        res=0; \
-        wget -qO "tor-$TOR_VERSION.tar.gz.asc" "$TOR_URL/tor-$TOR_VERSION.tar.gz.asc" || res=$?; \
-        if [ $res -gt 0 ]; then \
-          wget -qO "tor-$TOR_VERSION.tar.gz.asc" "$TOR_MIRROR_URL/tor-$TOR_VERSION.tar.gz.asc"; \
-        fi && \
-        gpg --keyserver "$TOR_GPG_KS_URI" --recv-keys "$TOR_GPG_KEY1" && \
-        gpg --keyserver "$TOR_GPG_KS_URI" --recv-keys "$TOR_GPG_KEY2" && \
-        gpg --keyserver "$TOR_GPG_KS_URI" --recv-keys "$TOR_GPG_KEY3" && \
-        gpg --keyserver "$TOR_GPG_KS_URI" --recv-keys "$TOR_GPG_KEY4" && \
-        gpg --verify "tor-$TOR_VERSION.tar.gz.asc" && \
-        tar -xzvf "tor-$TOR_VERSION.tar.gz" -C /usr/local/src && \
-        cd "/usr/local/src/tor-$TOR_VERSION" && \
-        ./configure \
-            --disable-asciidoc \
-            --sysconfdir=/etc \
-            --disable-unittests && \
-        make && make install && \
-        cd .. && \
-        rm -rf "tor-$TOR_VERSION" && \
-        rm "tor-$TOR_VERSION.tar.gz" && \
-        rm "tor-$TOR_VERSION.tar.gz.asc"
+        apt-get -y upgrade && \
+        apt-get install -y git libevent-dev zlib1g-dev libssl-dev gcc make automake ca-certificates autoconf musl-dev coreutils gnupg2 wget && \
+        mkdir -p /usr/local/src/
+
+# Install Tor
+RUN     cd /tmp && \
+        wget "$TOR_PGP_SIG_URL" && \
+        wget "$TOR_DEB_URL" && \
+        gpg --keyserver "$PGP_KS_URL" --recv-keys "$FLATCLOUD_PGP_KEY" && \
+        gpg --verify "$TOR_DEB_SIG" &&  \
+        echo "$TOR_SHA256 tor-0.4.6.7-linux-gnu-ppc64le.deb" | sha256sum -c - && \
+        dpkg -i tor-0.4.6.7-linux-gnu-ppc64le.deb && \
+        rm -rf /tmp/*
 
 # Install Golang & OBFS4 proxy
 RUN     cd /usr/local/src && \
-        echo "$GOLANG_SHA256 *$GOLANG_ARCHIVE" > GO_CHECKSUMS && \
+	echo "$GOLANG_SHA256 *$GOLANG_ARCHIVE" > GO_CHECKSUMS && \
         wget "$GOLANG_DL_URL/$GOLANG_ARCHIVE" && \
         sha256sum -c GO_CHECKSUMS 2>&1 | grep OK && \
         tar -C /usr/local/lib -xzf "$GOLANG_ARCHIVE" && \
@@ -102,3 +88,4 @@ EXPOSE  9050
 
 # Switch to user tor
 USER    tor
+

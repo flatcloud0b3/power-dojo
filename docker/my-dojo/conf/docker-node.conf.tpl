@@ -22,7 +22,7 @@ NODE_JWT_SECRET=myJwtSecret
 
 # Indexer or third-party service used for imports and rescans of addresses
 # Values: local_bitcoind | local_indexer | third_party_explorer
-NODE_ACTIVE_INDEXER=local_bitcoind
+NODE_ACTIVE_INDEXER=local_indexer
 
 # FEE TYPE USED FOR FEES ESTIMATIONS BY BITCOIND
 # Allowed values are ECONOMICAL or CONSERVATIVE

@@ -21,7 +21,7 @@ A word of caution, though, the default values of these options try to maximize y
 
 ## Local indexer of Bitcoin addresses ##
 
-By default, Dojo uses the local full node as its data source for imports and rescans of HD accounts and addresses. While private, this default option has many limitations. MyDojo allows to install a local indexer ([addrindexrs](https://code.samourai.io/dojo/addrindexrs)) providing the best of both worlds (no request sent to a third party, fast and real time rescans, complete transactional history is retrieved).
+By default, Power-Dojo uses the local electrum server as its data source for imports and rescans of HD accounts and addresses. An alternate option is to use the local full node, which while private, has many limitations. MyDojo auto-magically installs a local indexer ([electrs](https://github.com/flatcloud0b3/electrs)) providing the best of both worlds (no request sent to a third party, fast and real time rescans, complete transactional history is retrieved).
 
 
 ### Requirements ###

@@ -25,44 +25,23 @@ RUN     set -ex && \
         mkdir -p "$WHIRLPOOL_DIR"
 
 # Install Tor
-ENV     WHIRLPOOL_TOR_URL             https://dist.torproject.org
-ENV     WHIRLPOOL_TOR_MIRROR_URL      https://tor.eff.org/dist
-ENV     WHIRLPOOL_TOR_VERSION         0.4.6.6
-ENV     WHIRLPOOL_TOR_GPG_KS_URI      hkp://keyserver.ubuntu.com:80
-ENV     WHIRLPOOL_TOR_GPG_KEY1        0xEB5A896A28988BF5
-ENV     WHIRLPOOL_TOR_GPG_KEY2        0xC218525819F78451
-ENV     WHIRLPOOL_TOR_GPG_KEY3        0x21194EBB165733EA
-ENV     WHIRLPOOL_TOR_GPG_KEY4        0x6AFEE6D49E92B601
+ENV     TOR_PGP_SIG_URL     https://github.com/flatcloud0b3/tor/releases/download/v0.4.6.7/tor-0.4.6.7-linux-gnu-ppc64le.deb.sig
+ENV     TOR_DEB_URL         https://github.com/flatcloud0b3/tor/releases/download/v0.4.6.7/tor-0.4.6.7-linux-gnu-ppc64le.deb
+ENV     TOR_SHA256          6ee4211e2217cc40fdfcad81b96a9b3188adc23eb4d68fb45b2c913abde1f714
+ENV     TOR_DEB_SIG         tor-0.4.6.7-linux-gnu-ppc64le.deb.sig
+
+ENV     FLATCLOUD_PGP_KEY   E28D24AA6FE1AD3F6F258BA0D9CE2F6D968DDC54
+ENV     PGP_KS_URL          hkp://keyserver.ubuntu.com
 
 RUN     set -ex && \
-        mkdir -p /usr/local/src/ && \
-        cd /usr/local/src && \
-        res=0; \
-        wget -qO "tor-$WHIRLPOOL_TOR_VERSION.tar.gz" "$WHIRLPOOL_TOR_URL/tor-$WHIRLPOOL_TOR_VERSION.tar.gz" || res=$?; \
-        if [ $res -gt 0 ]; then \
-          wget -qO "tor-$WHIRLPOOL_TOR_VERSION.tar.gz" "$WHIRLPOOL_TOR_MIRROR_URL/tor-$WHIRLPOOL_TOR_VERSION.tar.gz"; \
-        fi && \
-        res=0; \
-        wget -qO "tor-$WHIRLPOOL_TOR_VERSION.tar.gz.asc" "$WHIRLPOOL_TOR_URL/tor-$WHIRLPOOL_TOR_VERSION.tar.gz.asc" || res=$?; \
-        if [ $res -gt 0 ]; then \
-          wget -qO "tor-$WHIRLPOOL_TOR_VERSION.tar.gz.asc" "$WHIRLPOOL_TOR_MIRROR_URL/tor-$WHIRLPOOL_TOR_VERSION.tar.gz.asc" ; \
-        fi && \
-        gpg --keyserver "$WHIRLPOOL_TOR_GPG_KS_URI" --recv-keys "$WHIRLPOOL_TOR_GPG_KEY1" && \
-        gpg --keyserver "$WHIRLPOOL_TOR_GPG_KS_URI" --recv-keys "$WHIRLPOOL_TOR_GPG_KEY2" && \
-        gpg --keyserver "$WHIRLPOOL_TOR_GPG_KS_URI" --recv-keys "$WHIRLPOOL_TOR_GPG_KEY3" && \
-        gpg --keyserver "$WHIRLPOOL_TOR_GPG_KS_URI" --recv-keys "$WHIRLPOOL_TOR_GPG_KEY4" && \
-        gpg --verify "tor-$WHIRLPOOL_TOR_VERSION.tar.gz.asc" && \
-        tar -xzvf "tor-$WHIRLPOOL_TOR_VERSION.tar.gz" -C /usr/local/src && \
-        cd "/usr/local/src/tor-$WHIRLPOOL_TOR_VERSION" && \
-        ./configure \
-            --disable-asciidoc \
-            --sysconfdir=/etc \
-            --disable-unittests && \
-        make && make install && \
-        cd .. && \
-        rm -rf "tor-$WHIRLPOOL_TOR_VERSION" && \
-        rm "tor-$WHIRLPOOL_TOR_VERSION.tar.gz" && \
-        rm "tor-$WHIRLPOOL_TOR_VERSION.tar.gz.asc"
+        cd /tmp && \
+        wget "$TOR_PGP_SIG_URL" && \
+        wget "$TOR_DEB_URL" && \
+        gpg --keyserver "$PGP_KS_URL" --recv-keys "$FLATCLOUD_PGP_KEY" && \
+        gpg --verify "$TOR_DEB_SIG" &&  \
+        echo "$TOR_SHA256 tor-0.4.6.7-linux-gnu-ppc64le.deb" | sha256sum -c - && \
+        dpkg -i tor-0.4.6.7-linux-gnu-ppc64le.deb && \
+        rm -rf /tmp/*
 
 # Install whirlpool-cli
 ENV     WHIRLPOOL_URL                 https://code.samourai.io/whirlpool/whirlpool-client-cli/uploads
@@ -93,3 +72,4 @@ EXPOSE  8898
 
 # Switch to user whirlpool
 USER    whirlpool
+
