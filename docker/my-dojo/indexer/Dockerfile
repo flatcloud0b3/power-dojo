@@ -1,11 +1,11 @@
-FROM    debian:buster-slim
+FROM    debian:11
 
 ENV     INDEXER_HOME            /home/indexer
 
-ENV     ELECTRS_PGP_SIG_URL     https://github.com/flatcloud0b3/electrs/releases/download/v0.8.11-ppc64le/electrs-0.8.11-linux-gnu-ppc64le.deb.sig
-ENV     ELECTRS_DEB_URL         https://github.com/flatcloud0b3/electrs/releases/download/v0.8.11-ppc64le/electrs-0.8.11-linux-gnu-ppc64le.deb
-ENV     ELECTRS_SHA256          62b7c0580280276c0daaed5434a53657474d3091279f12e51d494a3b5d0c4217
-ENV     ELECTRS_DEB_SIG         electrs-0.8.11-linux-gnu-ppc64le.deb.sig
+ENV     ELECTRS_PGP_SIG_URL     https://github.com/flatcloud0b3/electrs/releases/download/v0.8.12/electrs-0.8.12-linux-gnu-ppc64le.deb.sig
+ENV     ELECTRS_DEB_URL         https://github.com/flatcloud0b3/electrs/releases/download/v0.8.12/electrs-0.8.12-linux-gnu-ppc64le.deb
+ENV     ELECTRS_SHA256          63688d8d0a2ecb55d1eadc1e32db9fe9de355b6509c19c6f453000f9f5a880fb
+ENV     ELECTRS_DEB_SIG         electrs-0.8.12-linux-gnu-ppc64le.deb.sig
 
 ENV     PGP_KS_URL              hkp://keyserver.ubuntu.com
 ENV     FLATCLOUD_PGP_KEY       E28D24AA6FE1AD3F6F258BA0D9CE2F6D968DDC54
@@ -16,7 +16,7 @@ ARG     INDEXER_LINUX_UID
 # Install rocksdb library
 RUN     apt-get update && \
         apt-get -y upgrade && \
-        apt-get -y install gpg librocksdb-dev wget
+        apt-get -y install gpg wget librocksdb-dev=6.11.4-3
 
 # Install electrs
 RUN     set -ex && \
@@ -25,8 +25,8 @@ RUN     set -ex && \
         gpg --keyserver "$PGP_KS_URL" --recv "$FLATCLOUD_PGP_KEY" && \
         wget "$ELECTRS_PGP_SIG_URL" && \
         gpg --verify "$ELECTRS_DEB_SIG" && \
-        echo "$ELECTRS_SHA256 electrs-0.8.11-linux-gnu-ppc64le.deb" | sha256sum -c - && \
-        dpkg -i electrs-0.8.11-linux-gnu-ppc64le.deb && \
+        echo "$ELECTRS_SHA256 electrs-0.8.12-linux-gnu-ppc64le.deb" | sha256sum -c - && \
+        dpkg -i electrs-0.8.12-linux-gnu-ppc64le.deb && \
         rm -rf /tmp/*
 
 # Create group and user indexer
@@ -60,4 +60,3 @@ USER    indexer
 EXPOSE  50001
 
 STOPSIGNAL SIGINT
-
