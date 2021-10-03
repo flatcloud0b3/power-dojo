@@ -111,6 +111,10 @@ BITCOIND_ZMQ_RAWTXS=9501
 # Type: integer
 BITCOIND_ZMQ_BLK_HASH=9502
 
+# Port for connecting to bitcoin p2p protocol
+# Set value to 8333 if BITCOIND_INSTALL is set to 'on'
+# Type: integer
+BITCOIND_P2P_PORT=8333
 
 #
 # SHUTDOWN
