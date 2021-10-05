@@ -1,4 +1,4 @@
-FROM    debian:buster-slim
+FROM    debian:11-slim
 
 
 #################################################################
@@ -6,10 +6,10 @@ FROM    debian:buster-slim
 #################################################################
 ENV     TOR_HOME            /var/lib/tor
 
-ENV     TOR_PGP_SIG_URL     https://github.com/flatcloud0b3/tor/releases/download/v0.4.6.7/tor-0.4.6.7-linux-gnu-ppc64le.deb.sig
-ENV     TOR_DEB_URL         https://github.com/flatcloud0b3/tor/releases/download/v0.4.6.7/tor-0.4.6.7-linux-gnu-ppc64le.deb
-ENV     TOR_SHA256          6ee4211e2217cc40fdfcad81b96a9b3188adc23eb4d68fb45b2c913abde1f714
-ENV     TOR_DEB_SIG         tor-0.4.6.7-linux-gnu-ppc64le.deb.sig
+ENV     TOR_PGP_SIG_URL     https://github.com/flatcloud0b3/tor/releases/download/v0.4.6.7/tor-0.4.6.7-linux-gnu-ppc64le-bullseye.deb.sig
+ENV     TOR_DEB_URL         https://github.com/flatcloud0b3/tor/releases/download/v0.4.6.7/tor-0.4.6.7-linux-gnu-ppc64le-bullseye.deb
+ENV     TOR_SHA256          844886ac03e50cdf385e8edf6e493a3acbb7d1c83fbdef57901b4cb2d3916fae
+ENV     TOR_DEB_SIG         tor-0.4.6.7-linux-gnu-ppc64le-bullseye.deb.sig
 
 ENV     FLATCLOUD_PGP_KEY   E28D24AA6FE1AD3F6F258BA0D9CE2F6D968DDC54
 ENV     PGP_KS_URL          hkp://keyserver.ubuntu.com
@@ -36,8 +36,8 @@ RUN     cd /tmp && \
         wget "$TOR_DEB_URL" && \
         gpg --keyserver "$PGP_KS_URL" --recv-keys "$FLATCLOUD_PGP_KEY" && \
         gpg --verify "$TOR_DEB_SIG" &&  \
-        echo "$TOR_SHA256 tor-0.4.6.7-linux-gnu-ppc64le.deb" | sha256sum -c - && \
-        dpkg -i tor-0.4.6.7-linux-gnu-ppc64le.deb && \
+        echo "$TOR_SHA256 tor-0.4.6.7-linux-gnu-ppc64le-bullseye.deb" | sha256sum -c - && \
+        dpkg -i tor-0.4.6.7-linux-gnu-ppc64le-bullseye.deb && \
         rm -rf /tmp/*
 
 # Install Golang & OBFS4 proxy
@@ -88,4 +88,3 @@ EXPOSE  9050
 
 # Switch to user tor
 USER    tor
-
