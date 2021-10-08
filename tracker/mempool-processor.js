@@ -303,16 +303,20 @@ class MempoolProcessor {
   async _refreshActiveStatus() {
     // Get highest header in the blockchain
     // Get highest block processed by the tracker
-    const [highestBlock, info] = await Promise.all([db.getHighestBlock(), this.client.getblockchaininfo()])
-    const highestHeader = info.headers
+    try {
+      const [highestBlock, info] = await Promise.all([db.getHighestBlock(), this.client.getblockchaininfo()])
+      const highestHeader = info.headers
 
-    if (highestBlock == null || highestBlock.blockHeight === 0) {
-      this.isActive = false
-      return
+      if (highestBlock == null || highestBlock.blockHeight === 0) {
+        this.isActive = false
+        return
+      }
+
+      // Tolerate a delay of 6 blocks
+      this.isActive = (highestHeader >= 550000) && (highestHeader <= highestBlock.blockHeight + 6)
+    } catch (err) {
+      Logger.error(err, 'Tracker : MempoolProcessor._refreshActiveStatus()')
     }
-
-    // Tolerate a delay of 6 blocks
-    this.isActive = (highestHeader >= 550000) && (highestHeader <= highestBlock.blockHeight + 6)
   }
 
   /**
