@@ -65,8 +65,6 @@ COPY    ./wait-for-it.sh /wait-for-it.sh
 RUN     chown bitcoin:bitcoin /wait-for-it.sh && \
         chmod u+x /wait-for-it.sh && \
         chmod g+x /wait-for-it.sh
-<<<<<<< HEAD
-=======
 
 # Copy rpcauth.py script
 COPY    ./rpcauth.py /rpcauth.py
@@ -79,4 +77,3 @@ EXPOSE  8333 9501 9502 28256
 
 USER    bitcoin
 
->>>>>>> a9a75511f5f0f884271d6d866ecf86a517cbc084
