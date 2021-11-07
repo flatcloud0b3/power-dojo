@@ -4,7 +4,7 @@
 
 # Install and run an instance of whirlpool-cli inside Docker
 # Value: on | off
-WHIRLPOOL_INSTALL=off
+WHIRLPOOL_INSTALL=on
 
 # Resynchronize mix counters on startup (startup will be slower)
 # Value: on | off

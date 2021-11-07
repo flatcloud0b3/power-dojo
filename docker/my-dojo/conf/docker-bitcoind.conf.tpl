@@ -37,7 +37,7 @@ BITCOIND_MEMPOOL_EXPIRY=72
 
 # Min relay tx fee in BTC
 # Type: numeric
-BITCOIND_MIN_RELAY_TX_FEE=0.00001
+BITCOIND_MIN_RELAY_TX_FEE=0.000001
 
 # Allow incoming connections
 # This parameter is inactive if BITCOIND_INSTALL is set to 'off'
@@ -70,7 +70,7 @@ BITCOIND_EPHEMERAL_HS=on
 # Warning: Do not expose your RPC API to internet!
 # See BITCOIND_RPC_EXTERNAL_IP
 # Value: on | off
-BITCOIND_RPC_EXTERNAL=off
+BITCOIND_RPC_EXTERNAL=on
 
 # IP address used to expose the RPC API to external apps
 # This parameter is inactive if BITCOIND_RPC_EXTERNAL isn't set to 'on'
@@ -111,6 +111,10 @@ BITCOIND_ZMQ_RAWTXS=9501
 # Type: integer
 BITCOIND_ZMQ_BLK_HASH=9502
 
+# Port for connecting to bitcoin p2p protocol
+# Set value to 8333 if BITCOIND_INSTALL is set to 'on'
+# Type: integer
+BITCOIND_P2P_PORT=8333
 
 #
 # SHUTDOWN
