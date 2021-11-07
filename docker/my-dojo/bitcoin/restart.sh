@@ -13,6 +13,7 @@ bitcoind_options=(
   -disablewallet=1
   -dns=$BITCOIND_DNS
   -dnsseed=$BITCOIND_DNSSEED
+  -uacomment="Samourai Dojo $DOJO_VERSION_TAG"
   -maxconnections=$BITCOIND_MAX_CONNECTIONS
   -maxmempool=$BITCOIND_MAX_MEMPOOL
   -mempoolexpiry=$BITCOIND_MEMPOOL_EXPIRY
@@ -29,6 +30,7 @@ bitcoind_options=(
   -txindex=1
   -zmqpubhashblock=tcp://0.0.0.0:9502
   -zmqpubrawtx=tcp://0.0.0.0:9501
+  -deprecatedrpc=addresses
 )
 
 if [ "$BITCOIND_LISTEN_MODE" == "on" ]; then
