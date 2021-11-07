@@ -2,16 +2,13 @@
 set -e
 
 indexer_options=(
-  -vvvv
+  -vv
   --index-batch-size="$INDEXER_BATCH_SIZE"
-  --jsonrpc-import
   --db-dir="/home/indexer/db"
-  --indexer-rpc-addr="$NET_DOJO_INDEXER_IPV4:50001"
-  --indexer-http-addr="$NET_DOJO_INDEXER_IPV4:8080"
+  --daemon-p2p-addr="$BITCOIND_IP:$BITCOIND_P2P_PORT"
   --daemon-rpc-addr="$BITCOIND_IP:$BITCOIND_RPC_PORT"
-  --cookie="$BITCOIND_RPC_USER:$BITCOIND_RPC_PASSWORD"
-  --txid-limit="$INDEXER_TXID_LIMIT"
-  --blocktxids-cache-size-mb="$INDEXER_BLK_TXIDS_CACHE_SIZE_MB"
+  --electrum-rpc-addr="$NET_DOJO_INDEXER_IPV4:$INDEXER_RPC_PORT"
+  --index-lookup-limit="$INDEXER_TXID_LIMIT"
 )
 
 if [ "$COMMON_BTC_NETWORK" == "testnet" ]; then
@@ -20,4 +17,4 @@ else
   bitcoind_options+=(--network="mainnet")
 fi
 
-addrindexrs "${indexer_options[@]}"
+electrs "${indexer_options[@]}"
