@@ -47,3 +47,4 @@ RUN     chown node:node "$APP_DIR/wait-for-it.sh" && \
         chmod g+x "$APP_DIR/wait-for-it.sh"
 
 USER    node
+
