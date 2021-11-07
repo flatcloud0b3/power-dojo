@@ -17,7 +17,7 @@ services:
     restart: on-failure
     command: "/wait-for-it.sh tor:9050 --timeout=360 --strict -- /restart.sh"
     ports:
-      - "50001:50001"
+      - ${BITCOIND_RPC_EXTERNAL_IP}:50001:50001
     expose:
       - "8080"
     volumes:
