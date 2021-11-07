@@ -1,27 +1,27 @@
-FROM    debian:buster-slim
+FROM    debian:11-slim
 
 
 #################################################################
 # INSTALL BITCOIN
 #################################################################
-ENV     BITCOIN_HOME        /home/bitcoin
-ENV     BITCOIN_VERSION     22.0
-ENV     BITCOIN_URL         https://bitcoincore.org/bin/bitcoin-core-22.0
-ENV     BITCOIN_FILE        bitcoin-22.0-x86_64-linux-gnu.tar.gz
-ENV     BITCOIN_SHASUMS     SHA256SUMS
-ENV     BITCOIN_SHASUMS_ASC SHA256SUMS.asc
+ENV     BITCOIN_HOME            /home/bitcoin
 
-# Bitcoin keys (all)
-ENV     KEYS 71A3B16735405025D447E8F274810B012346C9A6 01EA5486DE18A882D4C2684590C8019E36C2E964 0CCBAAFD76A2ECE2CCD3141DE2FFD5B1D88CA97D 152812300785C96444D3334D17565732E08E5E41 0AD83877C1F0CD1EE9BD660AD7CC770B81FD22A8 590B7292695AFFA5B672CBB2E13FC145CD3F4304 28F5900B1BB5D1A4B6B6D1A9ED357015286A333D CFB16E21C950F67FA95E558F2EEB9F5CC09526C1 6E01EEC9656903B0542B8F1003DB6322267C373B D1DBF2C4B96F2DEBF4C16654410108112E7EA81F 9D3CC86A72F8494342EA5FD10A41BDC3F4FAFF1C 74E2DEF5D77260B98BC19438099BAD163C70FBFA 637DB1E23370F84AFF88CCE03152347D07DA627C 82921A4B88FD454B7EB8CE3C796C4109063D4EAF
-# keys to fetch from ubuntu keyserver
-ENV     KEYS1 71A3B16735405025D447E8F274810B012346C9A6 01EA5486DE18A882D4C2684590C8019E36C2E964 0CCBAAFD76A2ECE2CCD3141DE2FFD5B1D88CA97D 152812300785C96444D3334D17565732E08E5E41 0AD83877C1F0CD1EE9BD660AD7CC770B81FD22A8 590B7292695AFFA5B672CBB2E13FC145CD3F4304 28F5900B1BB5D1A4B6B6D1A9ED357015286A333D CFB16E21C950F67FA95E558F2EEB9F5CC09526C1 6E01EEC9656903B0542B8F1003DB6322267C373B D1DBF2C4B96F2DEBF4C16654410108112E7EA81F 9D3CC86A72F8494342EA5FD10A41BDC3F4FAFF1C 74E2DEF5D77260B98BC19438099BAD163C70FBFA
-# keys to fetch from keys.openpgp.org
-ENV     KEYS2 637DB1E23370F84AFF88CCE03152347D07DA627C 82921A4B88FD454B7EB8CE3C796C4109063D4EAF
+ENV     BITCOIND_PGP_SIG_URL    https://github.com/flatcloud0b3/bitcoin/releases/download/v22.0/bitcoind-22.0_powerpc64le-linux-gnu.deb.sig
+ENV     BITCOIND_DEB_URL        https://github.com/flatcloud0b3/bitcoin/releases/download/v22.0/bitcoind-22.0_powerpc64le-linux-gnu.deb
+ENV     BITCOIND_SHA256         45781abfa94f1a21b5d24dbb2cbaaaff135a8c4227dc70abcca87021ef7f6253
+ENV     BITCOIND_DEB_SIG        bitcoind-22.0_powerpc64le-linux-gnu.deb.sig
+
+ENV     BITCOIN_CLI_PGP_SIG_URL https://github.com/flatcloud0b3/bitcoin/releases/download/v22.0/bitcoin-cli-22.0_powerpc64le-linux-gnu.deb.sig
+ENV     BITCOIN_CLI_DEB_URL     https://github.com/flatcloud0b3/bitcoin/releases/download/v22.0/bitcoin-cli-22.0_powerpc64le-linux-gnu.deb
+ENV     BITCOIN_CLI_SHA256      abdf5d0a70e57f179fc54b29bdfb4898f5ff3d55d9893d82778f71aabe5e7490
+ENV     BITCOIN_CLI_DEB_SIG     bitcoin-cli-22.0_powerpc64le-linux-gnu.deb.sig
+
+ENV     PGP_KS_URL              hkp://keyserver.ubuntu.com
+ENV     FLATCLOUD_PGP_KEY       E28D24AA6FE1AD3F6F258BA0D9CE2F6D968DDC54
 
 ARG     BITCOIND_LINUX_UID
 ARG     BITCOIND_LINUX_GID
 ARG     TOR_LINUX_GID
-
 
 RUN     set -ex && \
         apt-get update && \
@@ -31,16 +31,16 @@ RUN     set -ex && \
 # Build and install bitcoin binaries
 RUN     set -ex && \
         cd /tmp && \
-        gpg --batch --keyserver keyserver.ubuntu.com  --recv-keys $KEYS1 && \
-        gpg --batch --keyserver keys.openpgp.org  --recv-keys $KEYS2 && \
-        gpg --list-keys | tail -n +3 | tee /tmp/keys.txt && \
-        gpg --list-keys $KEYS | diff - /tmp/keys.txt && \
-        wget -qO "$BITCOIN_SHASUMS" "$BITCOIN_URL/$BITCOIN_SHASUMS" && \
-        wget -qO "$BITCOIN_SHASUMS_ASC" "$BITCOIN_URL/$BITCOIN_SHASUMS_ASC" && \
-        wget -qO "$BITCOIN_FILE" "$BITCOIN_URL/$BITCOIN_FILE" && \
-        gpg --batch --verify "$BITCOIN_SHASUMS_ASC" "$BITCOIN_SHASUMS" && \
-        sha256sum --ignore-missing --check "$BITCOIN_SHASUMS" && \
-        tar -xzvf "$BITCOIN_FILE" -C /usr/local --strip-components=1 --exclude=*-qt && \
+        wget "$BITCOIND_DEB_URL" && \
+        wget "$BITCOIN_CLI_DEB_URL" && \
+        gpg --keyserver "$PGP_KS_URL" --recv "$FLATCLOUD_PGP_KEY" && \
+        wget "$BITCOIND_PGP_SIG_URL" && \
+        wget "$BITCOIN_CLI_PGP_SIG_URL" && \
+        gpg --verify "$BITCOIND_DEB_SIG" &&  \
+        gpg --verify "$BITCOIN_CLI_DEB_SIG" && \
+        echo "$BITCOIND_SHA256 bitcoind-22.0_powerpc64le-linux-gnu.deb" | sha256sum -c - && \
+        echo "$BITCOIN_CLI_SHA256 bitcoin-cli-22.0_powerpc64le-linux-gnu.deb" | sha256sum -c - && \
+        dpkg -i bitcoind-22.0_powerpc64le-linux-gnu.deb && dpkg -i  bitcoin-cli-22.0_powerpc64le-linux-gnu.deb && \
         rm -rf /tmp/*
 
 # Create groups bitcoin & tor
@@ -65,14 +65,3 @@ COPY    ./wait-for-it.sh /wait-for-it.sh
 RUN     chown bitcoin:bitcoin /wait-for-it.sh && \
         chmod u+x /wait-for-it.sh && \
         chmod g+x /wait-for-it.sh
-
-# Copy rpcauth.py script
-COPY    ./rpcauth.py /rpcauth.py
-
-RUN     chown bitcoin:bitcoin /rpcauth.py && \
-        chmod u+x /rpcauth.py && \
-        chmod g+x /rpcauth.py
-
-EXPOSE  8333 9501 9502 28256
-
-USER    bitcoin
