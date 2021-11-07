@@ -1,8 +1,4 @@
 [mysqld]
 sql_mode="NO_ENGINE_SUBSTITUTION"
 transaction_isolation=READ-COMMITTED
-<<<<<<< HEAD
 max_connections=500
-=======
-max_connections=500
->>>>>>> a9a75511f5f0f884271d6d866ecf86a517cbc084
